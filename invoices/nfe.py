@@ -14,8 +14,12 @@ headers = {
     "upgrade-insecure-requests": "1"
 }
 
-req = requests.post(url=url_qrcode, headers=headers)
-
+print('Making request...')
+try:
+    req = requests.post(url=url_qrcode, headers=headers, timeout=2)
+    print('\t', req, sep='')
+except:
+    print('\tProblem with the request. Probably nf-e is not available yet.')
 #%% Process
 
 html_doc = req.text
