@@ -1,8 +1,12 @@
-# %% [markdown]
-# ### Authentication
-
 # %%
-from pynubank import Nubank
+###############################################################################
+# NuBank Auth
+###############################################################################
+import os
+import json
+from os import path
+from pynubank import Nubank, nubank
+from tabulate import tabulate
 
 # Utilize o CPF sem pontos ou traços
 nu = Nubank()
@@ -15,112 +19,25 @@ nu.authenticate_with_qr_code(cpf, password, uuid)
 
 # Lista de dicionários contendo todas as transações de seu cartão de crédito
 card_statements = nu.get_card_statements()
-# print (card_statements)
 
 # Lista de dicionários contendo todas as faturas do seu cartão de crédito
 bills = nu.get_bills()
-print("Okay!")
-
-# %% [markdown]
-# ### Get bill
+print("Bills aquired!")
 
 # %%
-from tabulate import tabulate
-import json
-from datetime import datetime
-from pprint import pprint
-import os
-from time import time
+###############################################################################
+# Get data
+###############################################################################
+from mobills import get_mobills
+from nubank_info import NubankInfo
 
-def amount(item):
-    return item['amount']
-
-def date(item):
-    return item['post_date']
-
-def requestOpenBill():
-    for bill in bills:
-        if (bill['state'] == 'open'):
-            bill_details = nu.get_bill_details(bill)
-            break
-    tag_bill = bill_details['bill']['summary']['open_date'].split('-')
-    tag_bill = tag_bill[0] + '-' + tag_bill[1]
-    filename = "nubank_bill_details_" + tag_bill + "_" + datetime.now().strftime("%Y-%m-%d-%H%M%S") + ".json"
-    print("Filename =", filename)
-    with open (os.path.join("nubank", filename), 'w') as f:
-        json.dump (bill_details, f)
-    return bill_details
-
-def request_bill_by_field(field, value):
-    bill_details = None
-    for bill in bills:
-        if value in bill['summary'][field]:
-            bill_details = nu.get_bill_details(bill)
-            break
-    tag_bill = bill_details['bill']['summary']['open_date'].split('-')
-    tag_bill = tag_bill[0] + '-' + tag_bill[1]
-    filename = "nubank_bill_details_" + tag_bill + "_" + datetime.now().strftime("%Y-%m-%d-%H%M%S") + ".json"
-    print("Filename =", filename)
-    with open (os.path.join("nubank", filename), 'w') as f:
-        json.dump (bill_details, f)
-
-    return bill_details
-
-target_bill_open_date = input("Open date (YYYY-MM) of the target bill: ")
-
-lst = 0
-for path_file in os.listdir("nubank"):
-    full_path_file = os.path.join("nubank", path_file)
-    if(os.path.isfile(full_path_file) and path_file.split('_')[3] == target_bill_open_date and lst < os.path.getmtime(full_path_file)):
-        lst = os.path.getmtime(full_path_file)
-        lst_path = full_path_file
-diff_time = time() - lst
-if(diff_time > 3600): # More than one hour ago
-    bill_details = request_bill_by_field('open_date', target_bill_open_date)
-else:
-    with open(lst_path, 'r') as f:
-        bill_details = json.load (f)
-
-itemsOpen = bill_details['bill']['line_items']
-itemsOpen.sort (key=date)
-itemsFilteredTable = [('Date', 'Title', 'Category', 'Amount')]
-total = 0
-for item in itemsOpen:
-    if (item['amount']):
-        if ('category' in item):
-            # print (item)
-            # print (item['title'], '\t', item['category'], '\t', item['amount'])
-            itemsFilteredTable.append ((item['post_date'], item['title'], item['category'], float(item['amount']/100)))
-            if(item['amount'] > 0):
-                total += item['amount']
-        else:
-            # print (item)
-            itemsFilteredTable.append ((item['post_date'], item['title'], None, float(item['amount']/100)))
-
-print (tabulate (itemsFilteredTable, headers="firstrow", tablefmt='github', floatfmt=".2f"))
-print ("Total = R$", total/100)
-
-# %% [markdown]
-# ### Get Mobills information
+bill_details, items_open = NubankInfo(bills, nu).main(input("Open date (YYYY-MM) of the target bill: "))
+mobills = get_mobills(input("Mobills csv filename: "))
 
 # %%
-from pprint import pprint
-import csv
-mobills_csv_name = input("Mobills csv filename: ")
-mobillsFilePath = os.path.join("mobills", mobills_csv_name)
-with open (mobillsFilePath, 'r') as csvFile:
-    mobills = list(csv.reader (csvFile, delimiter=';'))[1:]
-    for i in range (len (mobills)):
-        mobills[i][3] = int (''.join(mobills[i][3].split (' ')[1].split(',')).replace('.', ''))
-
-pprint (mobills)
-
-# %% [markdown]
-# ### Match Nubank with Mobills
-
-# %%
-import json
-from os import path
+###############################################################################
+# Run matching
+###############################################################################
 
 # I could sort by value and try to match manually when there are more than one with the same value.
 # Based on this aproach, I need to have user validation that the matching is correct, and if not, allow manual match.
@@ -153,7 +70,7 @@ if (path.exists (jsonFilePath)):
 
 # Remove matches from expenses that don't exist anymore
 nuBankIds = set()
-for item in itemsOpen:
+for item in items_open:
     nuBankIds.add (item['id'])
 toRemoveFromMatch = []
 for key in match:
@@ -197,12 +114,12 @@ for exp in mobillsExps:
         mobillsExpsPerCost[exp[3]] = [exp]
     
 idToExpenseNuBank = {}
-for item in itemsOpen:
+for item in items_open:
     idToExpenseNuBank[item['id']] = item
 
 # Try to match expenses
 failsNuBank = [('Date', 'Title', 'Category', 'Amount')]
-for item in itemsOpen:
+for item in items_open:
     if (not item['id'] in match):
         if (not item['amount'] in mobillsExpsPerCost):
             failsNuBank.append(filterExp (item))
@@ -255,5 +172,3 @@ print("TOTALS:", "NuBank =", totalNuBank, "Mobills =", totalMobills, "Diff =", t
         
 with open (jsonFilePath, 'w') as dictMatch:
     json.dump (match, dictMatch)
-
-
