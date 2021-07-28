@@ -28,11 +28,15 @@ print("Bills aquired!")
 ###############################################################################
 # Get data
 ###############################################################################
-from mobills import get_mobills
+import mobills
 from nubank_info import NubankInfo
 
-bill_details, items_open = NubankInfo(bills, nu).main(input("Open date (YYYY-MM) of the target bill: "))
-mobills = get_mobills(input("Mobills csv filename: "))
+open_month = input("Open month (YYYY-MM) of the target bill: ")
+bill_details, items_open = NubankInfo(bills, nu).main(open_month)
+info_mobills_file = input("Mobills csv filename or empty for latest of open_month: ")
+if len(info_mobills_file) < 3:
+    info_mobills_file = open_month
+mobills = mobills.get_mobills(info_mobills_file)
 
 # %%
 ###############################################################################
