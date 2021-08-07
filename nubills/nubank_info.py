@@ -1,13 +1,26 @@
-from tabulate import tabulate
 import json
 from datetime import datetime
 import os
 from time import time
+from pynubank import Nubank
 
 class NubankInfo:
-    def __init__(self, bills, nu):
-        self.bills = bills
-        self.nu = nu
+    def get_bills(self):
+        # Utilize o CPF sem pontos ou traços
+        self.nu = Nubank()
+        uuid, qr_code = self.nu.get_qr_code()
+        qr_code.print_ascii(invert=True)
+        input('Após escanear o QRCode pressione enter para continuar')
+        cpf = input("CPF: ")
+        password = input("Senha: ")
+        self.nu.authenticate_with_qr_code(cpf, password, uuid)
+
+        # Lista de dicionários contendo todas as transações de seu cartão de crédito
+        # card_statements = self.nu.get_card_statements()
+
+        # Lista de dicionários contendo todas as faturas do seu cartão de crédito
+        self.bills = self.nu.get_bills()
+        print("Bills aquired!")
 
     def get_item_date(self, item):
         return item['post_date']
@@ -26,6 +39,7 @@ class NubankInfo:
         return bill_details
 
     def request_bill_by_field(self, field, value):
+        self.get_bills()
         bill_details = None
         for bill in self.bills:
             if value in bill['summary'][field]:

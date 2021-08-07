@@ -1,30 +1,7 @@
-# %%
-###############################################################################
-# NuBank Auth
-###############################################################################
 import os
 import json
-from os import path
-from pynubank import Nubank, nubank
 from tabulate import tabulate
 
-# Utilize o CPF sem pontos ou traços
-nu = Nubank()
-uuid, qr_code = nu.get_qr_code()
-qr_code.print_ascii(invert=True)
-input('Após escanear o QRCode pressione enter para continuar')
-cpf = input("CPF: ")
-password = input("Senha: ")
-nu.authenticate_with_qr_code(cpf, password, uuid)
-
-# Lista de dicionários contendo todas as transações de seu cartão de crédito
-card_statements = nu.get_card_statements()
-
-# Lista de dicionários contendo todas as faturas do seu cartão de crédito
-bills = nu.get_bills()
-print("Bills aquired!")
-
-# %%
 ###############################################################################
 # Get data
 ###############################################################################
@@ -32,13 +9,12 @@ import mobills
 from nubank_info import NubankInfo
 
 open_month = input("Open month (YYYY-MM) of the target bill: ")
-bill_details, items_open = NubankInfo(bills, nu).main(open_month)
+bill_details, items_open = NubankInfo().main(open_month)
 info_mobills_file = input("Mobills csv filename or empty for latest of open_month: ")
 if len(info_mobills_file) < 3:
     info_mobills_file = open_month
 mobills = mobills.get_mobills(info_mobills_file)
 
-# %%
 ###############################################################################
 # Run matching
 ###############################################################################
@@ -66,7 +42,7 @@ jsonFilePath = os.path.join("matchs", "match-" + month + '.json')
 
 # Read match json
 match = {}
-if (path.exists (jsonFilePath)):
+if (os.path.exists (jsonFilePath)):
     with open (jsonFilePath, 'r') as dictMatch:
         match = json.load (dictMatch)
 
