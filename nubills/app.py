@@ -8,6 +8,27 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+def row_to_dict(header, row):
+    """
+    Conect row to dict, key names based on header
+    """
+    row_dict = {}
+    for i in range(len(header)):
+        row_dict[header[i]] = row[i]
+    return row_dict
+
+
+def table_to_dicts(header, table):
+    """
+    Convert table to list of dicts, key names based on table headers
+    """
+    return_dicts = []
+    for row in table:
+        return_dicts.append(row_to_dict(header, row))
+
+    return return_dicts
+
+
 @app.route('/')
 def main():
     # Get data
@@ -104,7 +125,8 @@ def main():
         idToExpenseNuBank[item['id']] = item
 
     # Try to match expenses
-    failsNuBank = [('Date', 'Title', 'Category', 'Amount')]
+    headers_nubank = ('date', 'title', 'category', 'amount')
+    failsNuBank = [headers_nubank]
     for item in items_open:
         if (not item['id'] in match):
             if (not item['amount'] in mobillsExpsPerCost):
@@ -140,7 +162,8 @@ def main():
     print('')
 
     # Expenses from mobills not matched
-    failsMobills = [('Date', 'Title', 'Category', 'Amount')]
+    headers_mobills = ('date', 'title', 'category', 'amount')
+    failsMobills = [headers_mobills]
     for cost in mobillsExpsPerCost:
         for item in mobillsExpsPerCost[cost]:
             failsMobills.append(tuple (item))
@@ -167,6 +190,13 @@ def main():
             
     with open (jsonFilePath, 'w') as dictMatch:
         json.dump (match, dictMatch)
+
+    return_dict['nubankNoMatch'] = table_to_dicts(headers_nubank, return_dict['nubankNoMatch'][1:])
+    return_dict['mobillsNoMatch'] = table_to_dicts(headers_mobills, return_dict['mobillsNoMatch'][1:])
+    return_dict['matches'] = table_to_dicts(['nubank', 'mobills'], return_dict['matches'][1:])
+    for i in range(len(return_dict['matches'])):
+        return_dict['matches'][i]['nubank'] = row_to_dict(headers_nubank, return_dict['matches'][i]['nubank'])
+        return_dict['matches'][i]['mobills'] = row_to_dict(headers_mobills, return_dict['matches'][i]['mobills'])
 
     response = flask.jsonify(return_dict)
     response.headers.add('Access-Control-Allow-Origin', '*')
