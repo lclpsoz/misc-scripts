@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-nfe_code = input('Input nf-e code:')
+nfe_code = input('Input nf-e code: ')
 nfe_code = re.sub('\D', '', nfe_code)
 
 url_qrcode = 'http://www.nfce.se.gov.br/portal/qrcode.jsp?p=' + nfe_code + '|2|1|3|bb608455a1c917b0cb910034688a4fa65f851089'
@@ -20,6 +20,7 @@ try:
     print('\t', req, sep='')
 except:
     print('\tProblem with the request. Probably nf-e is not available yet.')
+    print('\tTry to go directly to the nfe page:', url_qrcode)
 
 #%% Process
 html_doc = req.text
