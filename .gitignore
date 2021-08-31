@@ -1,2 +1,6 @@
 # Local only data
 .data
+
+# Others
+node_modules
+.env
