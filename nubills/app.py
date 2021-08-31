@@ -3,16 +3,22 @@ import json
 from tabulate import tabulate
 import mobills
 from nubank_info import NubankInfo
-from flask import Flask
+import flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 @app.route("/")
 def main():
     # Get data
-    open_month = input("Open month (YYYY-MM) of the target bill: ")
+    open_month = request.args.get('openMonth')
+    if not open_month:
+        open_month = input("Open month (YYYY-MM) of the target bill: ")
     bill_details, items_open = NubankInfo().main(open_month)
-    info_mobills_file = input("Mobills csv filename or empty for latest of open_month: ")
+
+    info_mobills_file = request.args.get('mobillsFileName')
+    if info_mobills_file == None:
+        info_mobills_file = input("Mobills csv filename or empty for latest of open_month: ")
     if len(info_mobills_file) < 3:
         info_mobills_file = open_month
     mobills_data = mobills.get_mobills(info_mobills_file)
@@ -162,4 +168,6 @@ def main():
     with open (jsonFilePath, 'w') as dictMatch:
         json.dump (match, dictMatch)
 
-    return return_dict
+    response = flask.jsonify(return_dict)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response

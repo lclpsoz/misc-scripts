@@ -1,0 +1,13 @@
+.Nubills {
+  text-align: center;
+}
+
+.matches table {
+  margin: 0 auto;
+  border: 1px solid black;
+}
+
+.matches > table * {
+  margin: 0 auto;
+  border: 1px solid black;
+}

@@ -4,6 +4,8 @@ import os
 from time import time
 from pynubank import Nubank
 
+EXPIRE_SECONDS = 3*3600
+
 class NubankInfo:
     def get_bills(self):
         # Utilize o CPF sem pontos ou traços
@@ -66,7 +68,7 @@ class NubankInfo:
                 lst = os.path.getmtime(full_path_file)
                 lst_path = full_path_file
         diff_time = time() - lst
-        if diff_time > 3600: # More than one hour ago
+        if diff_time > EXPIRE_SECONDS: # More than one hour ago
             bill_details = self.request_bill_by_field('open_date', target_bill_open_date)
         else:
             with open(lst_path, 'r') as f:
