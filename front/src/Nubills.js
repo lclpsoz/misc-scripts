@@ -3,6 +3,16 @@ import axios from 'axios';
 
 import './Nubills.css';
 
+function getCardExpense({title, category, date, amount}) {
+  return (  
+    <div className='expense'>
+      <span id='corner-elem'>{date}</span>
+      <span id='title'>{title}</span> 
+      <b id='corner-elem'>{category}</b>
+    </div>
+  );
+}
+
 function Nubills() {
   const [data, setData] = useState(undefined);
   const [matches, setMatches] = useState(undefined);
@@ -20,22 +30,22 @@ function Nubills() {
   }, []);
 
   return (
-    <div className="Nubills">
+    <div className='Nubills'>
       {matches ?
         <div className='matches'>
           <h1>Matches</h1>
           <table>
             <thead> 
               <tr>
-                <th>{matches[0][0]}</th>
-                <th>{matches[0][1]}</th>
+                <th>Mobills</th>
+                <th>NuBank</th>
               </tr>
             </thead>
             <tbody>
               {Object.keys(matches).slice(1).map((item, idx) => (
                 <tr key={idx}>
-                  <td>{JSON.stringify(matches[item][0])}</td>
-                  <td>{JSON.stringify(matches[item][1])}</td>
+                  <td>{getCardExpense(matches[item]['mobills'])}</td>
+                  <td>{getCardExpense(matches[item]['nubank'])}</td>
                 </tr>
               ))}
             </tbody>

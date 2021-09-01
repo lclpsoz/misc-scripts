@@ -2,12 +2,32 @@
   text-align: center;
 }
 
+div .expense {
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  height: 100px;
+  width: 500px;
+  border: 1px solid black;
+  border-radius: 15px;
+  background: rgb(0, 255, 234);
+}
+
+/* div .expense #title{
+  vertical-align: middle;
+  line-height: 100px;
+} */
+
+div .expense #corner-elem {
+  padding: 0px 5px;
+}
+
 .matches table {
   margin: 0 auto;
   border: 1px solid black;
 }
 
-.matches > table * {
+.matches > table, td {
   margin: 0 auto;
   border: 1px solid black;
 }
