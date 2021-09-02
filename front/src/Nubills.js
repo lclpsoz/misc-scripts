@@ -6,9 +6,19 @@ import './Nubills.css';
 function getCardExpense({title, category, date, amount}) {
   return (  
     <div className='expense'>
-      <span id='corner-elem'>{date}</span>
-      <span id='title'>{title}</span> 
-      <b id='corner-elem'>{category}</b>
+      <table>
+        <tbody>
+          <tr height='25%'>
+            <td width='20%' id='left-corner-elem'>{date}</td>
+            <td><b>{category}</b></td>
+            <td width='20%' id='right-corner-elem'>R$ {(amount / 100).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td id='title' colSpan='3'>{title}</td>
+          </tr>
+          <tr height='25%'></tr>
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -34,7 +44,7 @@ function Nubills() {
       {matches ?
         <div className='matches'>
           <h1>Matches</h1>
-          <table>
+          <table id='matches'>
             <thead> 
               <tr>
                 <th>Mobills</th>
@@ -44,8 +54,8 @@ function Nubills() {
             <tbody>
               {Object.keys(matches).slice(1).map((item, idx) => (
                 <tr key={idx}>
-                  <td>{getCardExpense(matches[item]['mobills'])}</td>
-                  <td>{getCardExpense(matches[item]['nubank'])}</td>
+                  <td id='matches'>{getCardExpense(matches[item]['mobills'])}</td>
+                  <td id='matches'>{getCardExpense(matches[item]['nubank'])}</td>
                 </tr>
               ))}
             </tbody>
