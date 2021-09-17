@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Nubills from './Nubills';
+import Nubills from './pages/Nubills';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
