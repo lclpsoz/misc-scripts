@@ -77,8 +77,9 @@ def add_match():
         with open(json_match_fp, 'r') as fp:
             matches = json.load(fp)
     
-
     mobills_month_data = mobills.get_mobills(open_month)
+    _, nubank_month_data = NubankInfo().main(open_month,
+        ['category', 'amount', 'title', 'date', 'type', 'id'])
     
     nubank_ids_new_matches = set()
     mobills_ids_new_matches = dict()
@@ -86,8 +87,11 @@ def add_match():
         for nubank_id in nubank_ids:
             nubank_ids_new_matches.add(nubank_id)
         for mobills_id in mobills_ids:
-            if mobills_id not in mobills_ids_new_matches:
-                return ({'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.'}, 409)
+            if mobills_id not in mobills_month_data:
+                return ({
+                    'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.',
+                    'mobillsItem': mobills_month_data[mobills_id]},
+                    409)
             mobills_month_data[mobills_id]['count'] -= 1
             if mobills_month_data[mobills_id]['count'] == 0:
                 del mobills_month_data[mobills_id]
@@ -95,20 +99,31 @@ def add_match():
     for [nubank_ids, mobills_ids] in matches:
         for nubank_id in nubank_ids:
             if nubank_id in nubank_ids_new_matches:
-                    return ({'message': 'NuBank ID ' + nubank_id + ' already in matches file for the specified date.'}, 409)
+                return ({
+                    'message': 'Nubank ID ' + nubank_id + ' already matched.',
+                    'nubankItem': nubank_month_data[nubank_id]},
+                    409)
 
         for mobills_id in mobills_ids:
-            if mobills_id not in mobills_ids_new_matches:
-                return ({'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.'}, 409)
+            if mobills_id not in mobills_month_data:
+                return ({
+                    'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.',
+                    'mobillsItem': mobills_month_data[mobills_id]},
+                    409)
             mobills_month_data[mobills_id]['count'] -= 1
             if mobills_month_data[mobills_id]['count'] == 0:
                 del mobills_month_data[mobills_id]
     
+    match_was_inserted = False
     for match in new_matches:
         if len(match[0]) > 0 and len(match[1]) > 0:
             matches.append(match)
+            match_was_inserted = True
     
-    with open(json_match_fp, 'w') as fp:
-        json.dump(matches, fp)
+    if match_was_inserted:
+        with open(json_match_fp, 'w') as fp:
+            json.dump(matches, fp)
 
-    return ({'message': 'Success!'}, 200)
+        return ({'message': 'Success!'}, 201)
+    else:
+        return ({'message': 'Success! But no match was inserted.'}, 202)
