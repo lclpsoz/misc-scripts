@@ -11,7 +11,7 @@ function Nubills() {
 
   useEffect(() => {
     document.title = 'Nubills';
-    console.log('In useEffect!', process.env.REACT_APP_NODE);
+    console.log('In Nubills useEffect!', process.env.REACT_APP_NODE);
     axios.get(process.env.REACT_APP_NODE, { params: { openMonth: '2021-07', mobillsFileName: '' } }).then((res) => {
       console.log(res.data);
       setMatches(res.data.matches);

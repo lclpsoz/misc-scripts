@@ -34,8 +34,8 @@ function getRowExpense({ mobills, nubank }) {
 
   return (
     <Grid container item spacing={1}>
-      <Grid item xs>{getCardExpense(mobills, colorMoney)}</Grid>
-      <Grid item xs>{getCardExpense(nubank, colorMoney)}</Grid>
+      <Grid item xs sx={{width: '600px'}}>{getCardExpense(mobills, colorMoney)}</Grid>
+      <Grid item xs sx={{width: '600px'}}>{getCardExpense(nubank, colorMoney)}</Grid>
     </Grid>
   );
 }
@@ -45,7 +45,7 @@ export default function Matches(props) {
   return (
     <>
       {matches ?
-        <Box sx={{ flexGrow: 1, width: '1500px', margin: '0 auto' }} className='matches'>
+        <Box sx={{ flexGrow: 1, width: '1400px', margin: '0 auto' }} className='matches'>
           <Typography variant='h1' sx={{ textAlign: 'center' }}>
             Matches
           </Typography>
