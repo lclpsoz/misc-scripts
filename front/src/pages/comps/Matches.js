@@ -42,7 +42,7 @@ function getRowExpense([ nubank, mobills ]) {
       <Grid
         wrap='nowrap' container item xs={12} spacing={0} sx={{maxWidth: '750px'}}
         justifyContent='space-around' direction='row'>
-        <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='column' sepacing={2}>
+        <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='Rrow' sepacing={2}>
           {Object.keys(mobills).map((item, idx) => getCardExpense(mobills[item], colorMoney))}
         </Grid>
         <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='row' sepacing={1} columns={1}>
