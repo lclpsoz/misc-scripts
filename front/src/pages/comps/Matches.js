@@ -9,18 +9,20 @@ const ItemText = styled(Paper)(({ theme }) => ({
 
 function getCardExpense({ title, category, date, amount }, colorMoney) {
   return (
-    <Paper>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Stack justifyContent='space-around' direction='row'>
-            <Chip label={date} />
-            <Chip label={category} />
-            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney} />
-          </Stack>
+    <Grid item xs={12} sx={{padding: 1}} >
+      <Paper>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            <Stack justifyContent='space-around' direction='row'>
+              <Chip label={date} />
+              <Chip label={category} />
+              <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney} />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+    </Grid>
   );
 }
 
@@ -33,10 +35,21 @@ function getRowExpense([ nubank, mobills ]) {
         'error');
 
   return (
-    <Grid wrap='nowrap' container item xs={12} spacing={0} sx={{maxWidth: '750px'}} justifyContent='space-around'>
-      <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(mobills[0], colorMoney)}</Grid>
-      <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(nubank[0], colorMoney)}</Grid>
-    </Grid>
+    <>
+      <Grid item xs={12}>
+        <Divider>R$ TOTAL LEFT VS R$ TOTAL RIGHT</Divider>
+      </Grid>
+      <Grid
+        wrap='nowrap' container item xs={12} spacing={0} sx={{maxWidth: '750px'}}
+        justifyContent='space-around' direction='row'>
+        <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='column' sepacing={2}>
+          {Object.keys(mobills).map((item, idx) => getCardExpense(mobills[item], colorMoney))}
+        </Grid>
+        <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='row' sepacing={1} columns={1}>
+          {Object.keys(nubank).map((item, idx) => getCardExpense(nubank[item], colorMoney))}
+        </Grid>
+      </Grid>
+    </>
   );
 }
 

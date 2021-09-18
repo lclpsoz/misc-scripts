@@ -95,7 +95,7 @@ def add_match():
             if mobills_id not in mobills_month_data:
                 return ({
                     'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.',
-                    'mobillsItem': mobills_month_data[mobills_id]},
+                    'mobillsItem': [mobills_month_data[mobills_id] if mobills_id in mobills_month_data else None]},
                     409)
             mobills_month_data[mobills_id]['count'] -= 1
             if mobills_month_data[mobills_id]['count'] == 0:
@@ -106,14 +106,14 @@ def add_match():
             if nubank_id in nubank_ids_new_matches:
                 return ({
                     'message': 'Nubank ID ' + nubank_id + ' already matched.',
-                    'nubankItem': nubank_month_data[nubank_id]},
+                    'nubankItem': [nubank_month_data[nubank_id] if nubank_id in nubank_month_data else None]},
                     409)
 
         for mobills_id in mobills_ids:
             if mobills_id not in mobills_month_data:
                 return ({
                     'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.',
-                    'mobillsItem': mobills_month_data[mobills_id]},
+                    'mobillsItem': [mobills_month_data[mobills_id] if mobills_id in mobills_month_data else None]},
                     409)
             mobills_month_data[mobills_id]['count'] -= 1
             if mobills_month_data[mobills_id]['count'] == 0:
