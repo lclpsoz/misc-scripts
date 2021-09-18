@@ -9,15 +9,18 @@ function Nubills() {
   const [mobillsNoMatch, setMobillsNoMatch] = useState(undefined);
   const [nubankNoMatch, setNubankNoMatch] = useState(undefined);
 
+  const [openMonth, setOpenMonth] = useState('2021-07');
+
   const updateData = () => {
     console.log('In Nubills updateData!', process.env.REACT_APP_NODE);
-    axios.get(process.env.REACT_APP_NODE, { params: { openMonth: '2021-07', mobillsFileName: '' } }).then((res) => {
+    return axios.get(process.env.REACT_APP_NODE, { params: { openMonth: openMonth, mobillsFileName: '' } }).then((res) => {
       console.log(res.data);
       setMatches(res.data.matches);
       setMobillsNoMatch(res.data.mobillsNoMatch);
       setNubankNoMatch(res.data.nubankNoMatch);
     }).catch((err) => {
       console.log(err);
+      console.log(err.response);
     });
   };
 
@@ -31,7 +34,10 @@ function Nubills() {
     <Box sx={{maxWidth: '1500px', margin: '0 auto'}}>
       <Stack direction='row' spacing={3} justifyContent='space-around'>
         <Matches matches={matches}/>
-        <NoMatch mobillsNoMatch={mobillsNoMatch} nubankNoMatch={nubankNoMatch} updateData={updateData}/>
+        <NoMatch
+          mobillsNoMatch={mobillsNoMatch} nubankNoMatch={nubankNoMatch} updateData={updateData}
+          openMonth={openMonth} setOpenMonth={setOpenMonth}
+        />
       </Stack>
     </Box>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Stack, Paper, Chip, Typography, Divider, Checkbox, Fab } from '@mui/material'
-import { Add as AddIcon } from '@mui/icons-material'
+import { Box, Grid, Stack, Paper, Chip, Typography, Divider,
+  Button, Backdrop, CircularProgress, TextField, IconButton } from '@mui/material'
+import { Save as SaveIcon, Refresh as RefreshIcon } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import axios from 'axios';
 
@@ -25,7 +26,7 @@ function compare(a, b) {
 function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnselect, setTotal, selected) {
   const { title, category, date, amount, id } = item;
   const handleChange = (event) => {
-    if (event.target.checked) {
+    if (!selected) {
       setTotal(valTotal + item['amount']);
       setSelect(valSelect.concat(item).sort(compare));
       setUnselect(not(valUnselect, [item]));
@@ -38,21 +39,18 @@ function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnsel
   };
 
   return (
-    <>
-      <Paper>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Stack justifyContent='space-around' direction='row'>
-              <Chip label={date} />
-              <Chip label={category} />
-              <Chip label={`R$ ${(amount / 100).toFixed(2)}`} />
-            </Stack>
-          </Grid>
-          <Grid item xs={11} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
-          <Checkbox checked={selected} label='' onChange={handleChange} />
+    <Paper>
+      <Grid container spacing={1} onClick={handleChange}>
+        <Grid item xs={12}>
+          <Stack justifyContent='space-around' direction='row'>
+            <Chip label={date} />
+            <Chip label={category} />
+            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} />
+          </Stack>
         </Grid>
-      </Paper>
-    </>
+        <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
+      </Grid>
+    </Paper>
   );
 }
 
@@ -105,6 +103,8 @@ export default function NoMatch(props) {
   const [nubankUnselect, setNubankUnselect] = useState([]);
   const [nubankTotal, setNubankTotal] = useState(0);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const mobList = [];
     for (const item in props.mobillsNoMatch)
@@ -124,6 +124,7 @@ export default function NoMatch(props) {
   }, [props]);
 
   const handleSubmit = (event) => {
+    setLoading(true);
     const current_match = [[], []];
     for (const item of nubankSelect)
       current_match[0].push(item['id']);
@@ -134,16 +135,24 @@ export default function NoMatch(props) {
       { openMonth: '2021-07', matches: [ current_match ] },
       { 'Content-Type': 'application/json' }).then((res) => {
       if(res.status == 201)
-        props.updateData();
+        props.updateData().then(() => setLoading(false));
+      else
+        setLoading(false);
       console.log(res);
     }).catch((err) => {
       console.log(err);
       console.log(err.response);
-    });
+    }).then(() => setLoading(false));
   };
 
   return (
     <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ maxWidth: '750px' }}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Typography variant='h1' sx={{ textAlign: 'center' }}>
         No Match
       </Typography>
@@ -158,22 +167,47 @@ export default function NoMatch(props) {
           setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal}
         />
       </Stack>
-      <Fab
-        color="primary"
-        aria-label="add"
+      <Grid container direction='column' alignItems='center' spacing={1}
         sx={{
           margin: 0,
           top: 'auto',
           right: 'auto',
           bottom: 20,
-          left: 'auto',
+          left: '0',
           position: 'fixed',
           zIndex: 1
-        }}
-        onClick={handleSubmit}
-      >
-        <AddIcon />
-      </Fab>
+        }}>
+        <Grid item container direction='row' alignItems='center'>
+          <Grid item>
+            <TextField
+              id="open-month"
+              label="Open month"
+              variant="filled"
+              value={props.openMonth}
+              onChange={(event) => {
+                props.setOpenMonth(event.target.value);
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <IconButton aria-label='save-open-month' onClick={() => {
+              setLoading(true);
+              props.updateData().then(() => setLoading(false));
+            }}>
+              <SaveIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Button
+            variant='contained'
+            onClick={handleSubmit}
+            endIcon={<SaveIcon />}
+          >
+            Salvar matches
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

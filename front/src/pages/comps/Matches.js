@@ -32,10 +32,8 @@ function getRowExpense([ nubank, mobills ]) {
         'warning' :
         'error');
 
-  console.log(nubank, mobills);
-
   return (
-    <Grid wrap='nowrap' container item xs={12} spacing={1} sx={{maxWidth: '750px'}} justifyContent='space-around'>
+    <Grid wrap='nowrap' container item xs={12} spacing={0} sx={{maxWidth: '750px'}} justifyContent='space-around'>
       <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(mobills[0], colorMoney)}</Grid>
       <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(nubank[0], colorMoney)}</Grid>
     </Grid>
@@ -44,7 +42,6 @@ function getRowExpense([ nubank, mobills ]) {
 
 export default function Matches(props) {
   const matches = props.matches;
-  console.log(matches);
   return (
     <>
       {matches ?

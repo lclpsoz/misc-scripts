@@ -32,7 +32,10 @@ def main():
             'Mobills csv filename or empty for latest of open_month: ')
     if len(info_mobills_file) < 3:
         info_mobills_file = open_month
-    mobills_month_data = mobills.get_mobills(info_mobills_file)
+    try:
+        mobills_month_data = mobills.get_mobills(info_mobills_file)
+    except ValueError:
+        return ({'message': 'Mobills data for ' + open_month + ' not available!'}, 404)
 
     # Run matching
 
