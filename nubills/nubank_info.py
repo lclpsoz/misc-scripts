@@ -58,7 +58,7 @@ class NubankInfo:
 
         return bill_details
 
-    def main(self, target_bill_open_date):
+    def main(self, target_bill_open_date, columns_to_filter):
         lst = 0
         for path_file in os.listdir("nubank"):
             full_path_file = os.path.join("nubank", path_file)
@@ -96,9 +96,9 @@ class NubankInfo:
                                                 None,
                                                 float(item['amount']/100)))
 
-        # print(tabulate (itemsFilteredTable, headers="firstrow", tablefmt='github', floatfmt=".2f"))
-        print("NuBank Total = R$", total/100)
+        nubank_data = {}
+        for item in items_open:
+            nubank_data[item['id']] = {key: (item[key] if key in item else None) for key in columns_to_filter}
 
-        print('Returning nubank data!')
-        return bill_details, items_open
+        return bill_details, nubank_data
 
