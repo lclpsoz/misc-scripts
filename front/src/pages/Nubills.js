@@ -9,7 +9,7 @@ function Nubills() {
   const [mobillsNoMatch, setMobillsNoMatch] = useState(undefined);
   const [nubankNoMatch, setNubankNoMatch] = useState(undefined);
 
-  const [openMonth, setOpenMonth] = useState('2021-07');
+  const [openMonth, setOpenMonth] = useState('');
 
   const updateData = () => {
     console.log('In Nubills updateData!', process.env.REACT_APP_NODE);

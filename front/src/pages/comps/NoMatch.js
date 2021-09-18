@@ -167,7 +167,7 @@ export default function NoMatch(props) {
           setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal}
         />
       </Stack>
-      <Grid container direction='column' alignItems='center' spacing={1}
+      <Grid container justifyContent="center" alignItems='center' spacing={1}
         sx={{
           margin: 0,
           top: 'auto',
@@ -177,27 +177,25 @@ export default function NoMatch(props) {
           position: 'fixed',
           zIndex: 1
         }}>
-        <Grid item container direction='row' alignItems='center'>
-          <Grid item>
-            <TextField
-              id="open-month"
-              label="Open month"
-              variant="filled"
-              value={props.openMonth}
-              onChange={(event) => {
-                props.setOpenMonth(event.target.value);
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <IconButton aria-label='save-open-month' onClick={() => {
-              setLoading(true);
-              props.updateData().then(() => setLoading(false));
-            }}>
-              <SaveIcon />
-            </IconButton>
-          </Grid>
+        <Grid item container xs={12} direction='row' justifyContent="center" alignItems='center'>
+          <TextField
+            id="open-month"
+            label="Open month"
+            variant="filled"
+            value={props.openMonth}
+            onChange={(event) => {
+              props.setOpenMonth(event.target.value);
+            }}
+            sx={{ width: '100px'}}
+          />
+          <IconButton aria-label='save-open-month' direction='column' alignContent='flex-start' onClick={() => {
+            setLoading(true);
+            props.updateData().then(() => setLoading(false));
+          }}>
+            <SaveIcon />
+          </IconButton>
         </Grid>
+
         <Grid item>
           <Button
             variant='contained'
