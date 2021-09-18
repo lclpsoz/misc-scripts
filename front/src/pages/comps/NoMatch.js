@@ -35,9 +35,6 @@ function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnsel
       setUnselect(valUnselect.concat(item).sort(compare));
       setSelect(not(valSelect, [item]));
     }
-    console.log('Current selected:');
-    for (const item of valSelect)
-      console.log(item['id'], item['title']);
   };
 
   return (
@@ -136,6 +133,8 @@ export default function NoMatch(props) {
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
       { openMonth: '2021-07', matches: [ current_match ] },
       { 'Content-Type': 'application/json' }).then((res) => {
+      if(res.status == 201)
+        props.updateData();
       console.log(res);
     }).catch((err) => {
       console.log(err);
@@ -169,6 +168,7 @@ export default function NoMatch(props) {
           bottom: 20,
           left: 'auto',
           position: 'fixed',
+          zIndex: 1
         }}
         onClick={handleSubmit}
       >

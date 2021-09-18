@@ -44,14 +44,14 @@ def main():
             matches = json.load(fp)
 
     ## Update match object
-    nubank_match_data = dict(nubank_month_data)
-    mobills_match_data = dict(mobills_month_data)
-    update_matches(matches, nubank_match_data, mobills_match_data)
+    nubank_after_match_data = dict(nubank_month_data)
+    mobills_after_match_data = dict(mobills_month_data)
+    update_matches(matches, nubank_after_match_data, mobills_after_match_data)
 
     # Return and save data
     return_dict = {
-        'nubankNoMatch': nubank_month_data,
-        'mobillsNoMatch': mobills_month_data,
+        'nubankNoMatch': nubank_after_match_data,
+        'mobillsNoMatch': mobills_after_match_data,
         'matches': [[   [nubank_month_data[nubank_id] for nubank_id in nubArr ],
                         [mobills_month_data[mobills_id] for mobills_id in mobArr ]] for [nubArr, mobArr] in matches]
     }
