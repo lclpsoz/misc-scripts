@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, Grid, Stack, Paper, Chip, Typography, Divider, Checkbox, Fab } from '@mui/material'
 import { Add as AddIcon } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
+import axios from 'axios';
 
 const ItemText = styled(Paper)(({ theme }) => ({
   ...theme.typography.body1,
@@ -132,7 +133,13 @@ export default function NoMatch(props) {
     for (const item of mobillsSelect)
       current_match[1].push(item['id']);
 
-    console.log(current_match);
+    axios.post(process.env.REACT_APP_NODE + '/add-matches',
+      { openMonth: '2021-07', matches: [ current_match ] },
+      { 'Content-Type': 'application/json' }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
   };
 
   return (

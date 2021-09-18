@@ -2,13 +2,17 @@ import os
 import json
 import flask
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 import mobills
 from nubank_info import NubankInfo
 from matches import update_matches
 
 app = Flask(__name__)
-
+cors = CORS(app, resources={
+    r"/": {"origins": "*"},
+    r"/add-matches": {"origins": "*"}
+})
 
 @app.route('/')
 def main():
@@ -52,6 +56,59 @@ def main():
     with open(json_match_fp, 'w') as fp:
         json.dump(matches, fp)
 
-    response = flask.jsonify(return_dict)
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+
+    return (flask.jsonify(return_dict), 200)
+    # return gen_response(flask.jsonify(return_dict), 200)
+
+
+
+@app.route('/add-matches', methods=['POST'])
+# @cross_origin()
+def add_match():
+    data = json.loads(request.data)
+    new_matches = data['matches']
+    open_month = data['openMonth']
+    if not open_month:
+        open_month = input('Open month (YYYY-MM) of the target bill: ')
+    
+    json_match_fp = os.path.join('matchs', 'match-' + open_month + '.json')
+    matches = []
+    if (os.path.exists(json_match_fp)):
+        with open(json_match_fp, 'r') as fp:
+            matches = json.load(fp)
+    
+
+    mobills_month_data = mobills.get_mobills(open_month)
+    
+    nubank_ids_new_matches = set()
+    mobills_ids_new_matches = dict()
+    for [nubank_ids, mobills_ids] in new_matches:
+        for nubank_id in nubank_ids:
+            nubank_ids_new_matches.add(nubank_id)
+        for mobills_id in mobills_ids:
+            if mobills_id not in mobills_ids_new_matches:
+                return ({'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.'}, 409)
+            mobills_month_data[mobills_id]['count'] -= 1
+            if mobills_month_data[mobills_id]['count'] == 0:
+                del mobills_month_data[mobills_id]
+
+    for [nubank_ids, mobills_ids] in matches:
+        for nubank_id in nubank_ids:
+            if nubank_id in nubank_ids_new_matches:
+                    return ({'message': 'NuBank ID ' + nubank_id + ' already in matches file for the specified date.'}, 409)
+
+        for mobills_id in mobills_ids:
+            if mobills_id not in mobills_ids_new_matches:
+                return ({'message': 'Mobills ID ' + mobills_id + ' not in mobills file or too many instances.'}, 409)
+            mobills_month_data[mobills_id]['count'] -= 1
+            if mobills_month_data[mobills_id]['count'] == 0:
+                del mobills_month_data[mobills_id]
+    
+    for match in new_matches:
+        if len(match[0]) > 0 and len(match[1]) > 0:
+            matches.append(match)
+    
+    with open(json_match_fp, 'w') as fp:
+        json.dump(matches, fp)
+
+    return ({'message': 'Success!'}, 200)
