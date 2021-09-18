@@ -36,7 +36,7 @@ def main():
     open_month = request.args.get('openMonth')
     if not open_month:
         open_month = input('Open month (YYYY-MM) of the target bill: ')
-    bill_details, items_open = NubankInfo().main(open_month)
+    nu_bill_details, nu_items_open = NubankInfo().main(open_month)
 
     info_mobills_file = request.args.get('mobillsFileName')
     if info_mobills_file == None:
@@ -47,68 +47,60 @@ def main():
     mobills_data = mobills.get_mobills(info_mobills_file)
 
     # Run matching
-    month = bill_details['bill']['summary']['open_date'][:7]
-    jsonFilePath = os.path.join('matchs', 'match-' + month + '.json')
 
-    # Read match json
+    json_match_fp = os.path.join('matchs', 'match-' + open_month + '.json')
     match = {}
-    if (os.path.exists(jsonFilePath)):
-        with open(jsonFilePath, 'r') as dictMatch:
-            match = json.load(dictMatch)
+    if (os.path.exists(json_match_fp)):
+        with open(json_match_fp, 'r') as fp:
+            match = json.load(fp)
 
-    # Remove matches from expenses that don't exist anymore
-    nuBankIds = set()
-    for item in items_open:
-        nuBankIds.add(item['id'])
-    toRemoveFromMatch = []
-    for key in match:
-        if (not key in nuBankIds):
-            toRemoveFromMatch.append(key)
-    for key in match:
-        if (not match[key] in mobills_data):
-            toRemoveFromMatch.append(key)
-    for key in toRemoveFromMatch:
-        del(match[key])
+    ## Remove matches from expenses that don't exist anymore
+    nu_cur_ids = set()
+    for item in nu_items_open:
+        nu_cur_ids.add(item['id'])
 
-    # Create map from each mobills expense to each amount.
-    mobillsExps = {}
-    tupleMobills = []
+    del_from_match = []
+    for key in match:
+        if key not in nu_cur_ids or match[key] not in mobills_data:
+            del_from_match.append(key)
+
+    for key in del_from_match:
+        del match[key]
+
+    # Count each mobills expense
+    mobills_count_exp = {}
     for exp in map(tuple, mobills_data):
-        tupleMobills.append(exp)
-    for exp in tupleMobills:
-        if(tupleMobills.count(exp) != 1):
-            print(exp, tupleMobills.count(exp))
-        if (exp in mobillsExps):
-            mobillsExps[exp] += 1
+        if exp in mobills_count_exp:
+            mobills_count_exp[exp] = 1
         else:
-            mobillsExps[exp] = 1
+            mobills_count_exp[exp] += 1
 
-    # Exclude already matched expeses from mobills_
+    # Exclude already matched expeses from mobills
     for key in match:
         try:
-            mobillsExps[tuple(match[key])] -= 1
-            if (mobillsExps[tuple(match[key])] == 0):
-                del mobillsExps[tuple(match[key])]
+            mobills_count_exp[tuple(match[key])] -= 1
+            if (mobills_count_exp[tuple(match[key])] == 0):
+                del mobills_count_exp[tuple(match[key])]
         except:
             print('Error in', key, match[key], ' probably match error.')
 
     # Map from cost of the mobills expense to an array of expenses of
     # this cost.
     mobillsExpsPerCost = {}
-    for exp in mobillsExps:
+    for exp in mobills_count_exp:
         if(exp[3] in mobillsExpsPerCost):
             mobillsExpsPerCost[exp[3]].append(exp)
         else:
             mobillsExpsPerCost[exp[3]] = [exp]
 
     idToExpenseNuBank = {}
-    for item in items_open:
+    for item in nu_items_open:
         idToExpenseNuBank[item['id']] = item
 
     # Try to match expenses
     headers_nubank = ('date', 'title', 'category', 'amount')
     failsNuBank = [headers_nubank]
-    for item in items_open:
+    for item in nu_items_open:
         if (not item['id'] in match):
             if (not item['amount'] in mobillsExpsPerCost):
                 failsNuBank.append(filterExp(item))
@@ -173,8 +165,8 @@ def main():
     print('TOTALS:', 'NuBank =', totalNuBank, 'mobills =',
           totalMobills, 'Diff =', totalNuBank-totalMobills)
 
-    with open(jsonFilePath, 'w') as dictMatch:
-        json.dump(match, dictMatch)
+    with open(json_match_fp, 'w') as fp:
+        json.dump(match, fp)
 
     return_dict['nubankNoMatch'] = table_to_dicts(
         headers_nubank, return_dict['nubankNoMatch'][1:])
