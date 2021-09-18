@@ -21,14 +21,16 @@ function compare(a, b) {
   return 0;
 }
 
-function CardExpense(item, valSelect, valUnselect, setSelect, setUnselect, selected) {
+function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnselect, setTotal, selected) {
   const { title, category, date, amount, id } = item;
   const handleChange = (event) => {
     if (event.target.checked) {
+      setTotal(valTotal + item['amount']);
       setSelect(valSelect.concat(item).sort(compare));
       setUnselect(not(valUnselect, [item]));
     }
     else {
+      setTotal(valTotal - item['amount']);
       setUnselect(valUnselect.concat(item).sort(compare));
       setSelect(not(valSelect, [item]));
     }
@@ -56,7 +58,13 @@ function CardExpense(item, valSelect, valUnselect, setSelect, setUnselect, selec
   );
 }
 
-function StackNoMatch({ name, selected, unselected, setSelected, setUnselected }) {
+function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, setSelected, setUnselected, setTotal }) {
+  const colorMoney =
+  valTotal === valTotalOther ?
+      'success' :
+      (Math.abs(valTotal - valTotalOther) < 5 ?
+        'warning' :
+        'error');
   return (
     <>
       <Stack spacing={2} sx={{ width: '600px' }}>
@@ -71,7 +79,11 @@ function StackNoMatch({ name, selected, unselected, setSelected, setUnselected }
             </Typography>
           </Divider>
         </Box>
-        {Object.keys(selected).map((item, idx) => CardExpense(selected[item], selected, unselected, setSelected, setUnselected, true))}
+        {Object.keys(selected).map((item, idx) =>
+          CardExpense(selected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, true))}
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <Chip color={colorMoney} label={`Total: R$ ${(valTotal / 100).toFixed(2)}`}/>
+        </Box>
 
         <Box>
           <Divider withChildren sx={{ textAlign: 'center' }}>
@@ -80,7 +92,7 @@ function StackNoMatch({ name, selected, unselected, setSelected, setUnselected }
             </Typography>
           </Divider>
         </Box>
-        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, setSelected, setUnselected, false))}
+        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, false))}
       </Stack>
     </>
   )
@@ -89,8 +101,11 @@ function StackNoMatch({ name, selected, unselected, setSelected, setUnselected }
 export default function NoMatch(props) {
   const [mobillsSelect, setMobillsSelect] = useState([]);
   const [mobillsUnselect, setMobillsUnselect] = useState([]);
+  const [mobillsTotal, setMobillsTotal] = useState(0);
+
   const [nubankSelect, setNubankSelect] = useState([]);
   const [nubankUnselect, setNubankUnselect] = useState([]);
+  const [nubankTotal, setNubankTotal] = useState(0);
 
   useEffect(() => {
     const mobList = [];
@@ -98,12 +113,14 @@ export default function NoMatch(props) {
       mobList.push(props.mobillsNoMatch[item])
     setMobillsUnselect(mobList.sort(compare));
     setMobillsSelect([]);
+    setMobillsTotal(0);
 
     const nuList = [];
     for (const item in props.nubankNoMatch)
       nuList.push(props.nubankNoMatch[item])
     setNubankUnselect(nuList.sort(compare));
     setNubankSelect([]);
+    setNubankTotal(0);
 
 
   }, [props]);
@@ -125,8 +142,14 @@ export default function NoMatch(props) {
       </Typography>
       <Divider />
       <Stack direction='row' spacing={1}>
-        <StackNoMatch name='Mobills' selected={mobillsSelect} unselected={mobillsUnselect} setSelected={setMobillsSelect} setUnselected={setMobillsUnselect} />
-        <StackNoMatch name='NuBank' selected={nubankSelect} unselected={nubankUnselect} setSelected={setNubankSelect} setUnselected={setNubankUnselect} />
+        <StackNoMatch
+          name='Mobills' selected={mobillsSelect} unselected={mobillsUnselect} valTotal={mobillsTotal} valTotalOther={nubankTotal}
+          setSelected={setMobillsSelect} setUnselected={setMobillsUnselect} setTotal={setMobillsTotal}
+        />
+        <StackNoMatch
+          name='NuBank' selected={nubankSelect} unselected={nubankUnselect} valTotal={nubankTotal} valTotalOther={mobillsTotal}
+          setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal}
+        />
       </Stack>
       <Fab
         color="primary"
