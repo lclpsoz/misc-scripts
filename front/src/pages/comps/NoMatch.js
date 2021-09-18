@@ -8,10 +8,10 @@ const ItemText = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary
 }));
 
-function getCardExpense({ title, category, date, amount }, valSelect, setSelect) {
+function getCardExpense({ title, category, date, amount, id }, valSelect, setSelect) {
   const handleChange = (event) => {
     if(event.target.checked)
-      setSelect(title + date);
+      setSelect(id);
     else
       setSelect(null);
   };
@@ -27,7 +27,7 @@ function getCardExpense({ title, category, date, amount }, valSelect, setSelect)
           </Stack>
         </Grid>
         <Grid item xs={11} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
-        <Checkbox checked={title + date===valSelect} label='' onChange={handleChange}/>
+        <Checkbox checked={id===valSelect} label='' onChange={handleChange}/>
       </Grid>
     </Paper>
   );
