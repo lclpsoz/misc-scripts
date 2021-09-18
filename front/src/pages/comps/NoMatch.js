@@ -1,4 +1,5 @@
-import { Box, Grid, Stack, Paper, Chip, Typography, Divider } from '@mui/material'
+import { useState } from 'react';
+import { Box, Grid, Stack, Paper, Chip, Typography, Divider, Checkbox } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 const ItemText = styled(Paper)(({ theme }) => ({
@@ -7,7 +8,14 @@ const ItemText = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.primary
 }));
 
-function getCardExpense({ title, category, date, amount }, colorMoney) {
+function getCardExpense({ title, category, date, amount }, valSelect, setSelect) {
+  const handleChange = (event) => {
+    if(event.target.checked)
+      setSelect(title + date);
+    else
+      setSelect(null);
+  };
+
   return (
     <Paper>
       <Grid container spacing={1}>
@@ -15,21 +23,23 @@ function getCardExpense({ title, category, date, amount }, colorMoney) {
           <Stack justifyContent='space-around' direction='row'>
             <Chip label={date} />
             <Chip label={category} />
-            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney} />
+            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} />
           </Stack>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
+        <Grid item xs={11} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
+        <Checkbox checked={title + date===valSelect} label='' onChange={handleChange}/>
       </Grid>
     </Paper>
   );
 }
 
 export default function NoMatch(props) {
+  const [mobillsSelect, setMobillsSelect] = useState(null);
+  const [nubillsSelect, setNubillsSelect] = useState(null);
+
   const mobillsNoMatch = props.mobillsNoMatch;
   const nubankNoMatch = props.nubankNoMatch;
 
-  console.log(mobillsNoMatch);
-  console.log(nubankNoMatch);
   return (
     <>
       {mobillsNoMatch && nubankNoMatch ?
@@ -43,13 +53,13 @@ export default function NoMatch(props) {
               <Typography variant='h2' sx={{ textAlign: 'center' }}>
                 Mobills
               </Typography>
-              {Object.keys(mobillsNoMatch).slice(1).map((item, idx) => getCardExpense(mobillsNoMatch[item]))}
+              {Object.keys(mobillsNoMatch).slice(1).map((item, idx) => getCardExpense(mobillsNoMatch[item], mobillsSelect, setMobillsSelect))}
             </Stack>
             <Stack spacing={2}>
               <Typography variant='h2' sx={{ textAlign: 'center' }}>
                 NuBank
               </Typography>
-              {Object.keys(nubankNoMatch).slice(1).map((item, idx) => getCardExpense(nubankNoMatch[item]))}
+              {Object.keys(nubankNoMatch).slice(1).map((item, idx) => getCardExpense(nubankNoMatch[item], nubillsSelect, setNubillsSelect))}
             </Stack>
           </Stack>
         </Box>
