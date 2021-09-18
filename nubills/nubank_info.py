@@ -99,6 +99,10 @@ class NubankInfo:
         nubank_data = {}
         for item in items_open:
             nubank_data[item['id']] = {key: (item[key] if key in item else None) for key in columns_to_filter}
+            if 'date' in columns_to_filter:
+                post_date = item['post_date'].split('-')
+                date = post_date[2] + '/' + post_date[1] + '/' + post_date[0]
+                nubank_data[item['id']]['date'] = date
 
         return bill_details, nubank_data
 

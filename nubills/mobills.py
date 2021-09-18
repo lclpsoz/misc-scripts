@@ -24,6 +24,7 @@ def get_mobills(info_file):
             mobills_data[exp_id]['count'] += 1
         else:
             mobills_data[exp_id] = {
+                'id': exp_id,
                 'date': exp_row[0],
                 'title': exp_row[1],
                 'category': exp_row[2],
