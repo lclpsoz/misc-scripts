@@ -23,7 +23,7 @@ function Nubills() {
   }, []);
 
   return (
-    <Box sx={{maxWidth: '3000px', margin: '0 auto'}}>
+    <Box sx={{maxWidth: '1500px', margin: '0 auto'}}>
       <Stack direction='row' spacing={3} justifyContent='space-around'>
         <Matches matches={matches}/>
         <NoMatch mobillsNoMatch={mobillsNoMatch} nubankNoMatch={nubankNoMatch}/>

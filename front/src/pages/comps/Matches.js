@@ -24,7 +24,7 @@ function getCardExpense({ title, category, date, amount }, colorMoney) {
   );
 }
 
-function getRowExpense({ mobills, nubank }) {
+function getRowExpense([ nubank, mobills ]) {
   const colorMoney =
     mobills.amount === nubank.amount ?
       'success' :
@@ -32,26 +32,29 @@ function getRowExpense({ mobills, nubank }) {
         'warning' :
         'error');
 
+  console.log(nubank, mobills);
+
   return (
-    <Grid container item spacing={1}>
-      <Grid item xs sx={{width: '600px'}}>{getCardExpense(mobills, colorMoney)}</Grid>
-      <Grid item xs sx={{width: '600px'}}>{getCardExpense(nubank, colorMoney)}</Grid>
+    <Grid wrap='nowrap' container item xs={12} spacing={1} sx={{maxWidth: '750px'}} justifyContent='space-around'>
+      <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(mobills[0], colorMoney)}</Grid>
+      <Grid item xs={6} sx={{maxWidth: '350px'}}>{getCardExpense(nubank[0], colorMoney)}</Grid>
     </Grid>
   );
 }
 
 export default function Matches(props) {
   const matches = props.matches;
+  console.log(matches);
   return (
     <>
       {matches ?
-        <Box sx={{ flexGrow: 1, width: '1400px', margin: '0 auto' }} className='matches'>
+        <Box sx={{ flexGrow: 1, margin: '0 auto', maxWidth: '750px' }} className='matches'>
           <Typography variant='h1' sx={{ textAlign: 'center' }}>
             Matches
           </Typography>
           <Divider />
           <Grid container spacing={2}>
-            <Grid container item spacing={1}>
+            <Grid container item xs={12} spacing={1}>
               <Grid item xs>
                 <Typography variant='h2' sx={{ textAlign: 'center' }}>
                   Mobills
@@ -63,7 +66,7 @@ export default function Matches(props) {
                 </Typography>
               </Grid>
             </Grid>
-            {Object.keys(matches).slice(1).map((item, idx) => getRowExpense(matches[item]))}
+            {Object.keys(matches).map((item, idx) => getRowExpense(matches[item]))}
           </Grid>
         </Box>
         :

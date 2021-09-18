@@ -68,7 +68,7 @@ function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, set
         'error');
   return (
     <>
-      <Stack spacing={2} sx={{ width: '600px' }}>
+      <Stack spacing={2} sx={{ maxWidth: '350px' }}>
         <Typography variant='h2' sx={{ textAlign: 'center' }}>
           {name}
         </Typography>
@@ -144,7 +144,7 @@ export default function NoMatch(props) {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ width: '1400px' }}>
+    <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ maxWidth: '750px' }}>
       <Typography variant='h1' sx={{ textAlign: 'center' }}>
         No Match
       </Typography>
