@@ -1,25 +1,49 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Box, Grid, Stack, Paper, Chip, Typography, Divider } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-import './Nubills.css';
+const ItemText = styled(Paper)(({ theme }) => ({
+  ...theme.typography.h6,
+  padding: theme.spacing(1),
+  color: theme.palette.text.primary
+}));
 
-function getCardExpense({title, category, date, amount}) {
-  return (  
-    <div className='expense'>
-      <table>
-        <tbody>
-          <tr height='25%'>
-            <td width='20%' id='left-corner-elem'>{date}</td>
-            <td><b>{category}</b></td>
-            <td width='20%' id='right-corner-elem'>R$ {(amount / 100).toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td id='title' colSpan='3'>{title}</td>
-          </tr>
-          <tr height='25%'></tr>
-        </tbody>
-      </table>
-    </div>
+const GridItem = styled(Grid)(({ theme }) => ({
+  ...theme.typography.body2,
+  border: theme.spacing(1)
+}));
+
+function getCardExpense({ title, category, date, amount }, colorMoney) {
+  return (
+    <Paper>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Stack justifyContent='space-around' direction='row'>
+            <Chip label={date} />
+            <Chip label={category} />
+            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney}/>
+          </Stack>
+        </Grid>
+        <Grid item xs={12} sx={{textAlign: 'center'}}><ItemText elevation={0}>{title}</ItemText></Grid>
+      </Grid>
+    </Paper>
+  );
+}
+
+function getRowExpense({ mobills, nubank }) {
+  const colorMoney =
+    mobills.amount === nubank.amount ? 
+      'success' :
+      (Math.abs(mobills.amount - nubank.amount) < 0.05 ? 
+        'warning' :
+        'error');
+
+  return (
+    <Grid container item spacing={1}>
+      <Grid item xs>{getCardExpense(mobills, colorMoney)}</Grid>
+      <Grid item xs>{getCardExpense(nubank, colorMoney)}</Grid>
+    </Grid>
   );
 }
 
@@ -43,23 +67,27 @@ function Nubills() {
     <div className='Nubills'>
       {matches ?
         <div className='matches'>
-          <h1>Matches</h1>
-          <table id='matches'>
-            <thead> 
-              <tr>
-                <th>Mobills</th>
-                <th>NuBank</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(matches).slice(1).map((item, idx) => (
-                <tr key={idx}>
-                  <td id='matches'>{getCardExpense(matches[item]['mobills'])}</td>
-                  <td id='matches'>{getCardExpense(matches[item]['nubank'])}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Box sx={{ flexGrow: 1, maxWidth: '1000px', margin: '0 auto'}}>
+            <Typography variant='h1' sx={{ textAlign: 'center' }}>
+              Matches
+            </Typography>
+            <Divider/>
+            <Grid container spacing={2}>
+              <Grid container item spacing={1}>
+                <Grid item xs>
+                  <Typography variant='h2' sx={{ textAlign: 'center' }}>
+                    Mobills
+                  </Typography>
+                </Grid>
+                <Grid item xs>
+                  <Typography variant='h2' sx={{ textAlign: 'center' }}>
+                    NuBank
+                  </Typography>
+                </Grid>
+              </Grid>
+              {Object.keys(matches).slice(1).map((item, idx) => getRowExpense(matches[item]))}
+            </Grid>
+          </Box>
         </div>
         :
         null}
