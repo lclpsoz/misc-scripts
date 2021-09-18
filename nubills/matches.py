@@ -22,7 +22,9 @@ def update_matches(matches, nubank_month_data, mobills_month_data):
             for nu_id in nubank_ids_filtered:
                 del nubank_month_data[nu_id]
             for mo_id in mobills_ids_filtered:
-                del mobills_month_data[mo_id]
+                mobills_month_data[mo_id]['count'] -= 1
+                if mobills_month_data[mo_id]['count'] == 0:
+                    del mobills_month_data[mo_id]
     
     matches = matches_cleaned
     
