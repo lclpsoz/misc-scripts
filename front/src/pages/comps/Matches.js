@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Box, Grid, Stack, Paper, Chip, Typography, Divider } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
@@ -17,10 +15,10 @@ function getCardExpense({ title, category, date, amount }, colorMoney) {
           <Stack justifyContent='space-around' direction='row'>
             <Chip label={date} />
             <Chip label={category} />
-            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney}/>
+            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney} />
           </Stack>
         </Grid>
-        <Grid item xs={12} sx={{textAlign: 'center'}}><ItemText elevation={0}>{title}</ItemText></Grid>
+        <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
       </Grid>
     </Paper>
   );
@@ -28,9 +26,9 @@ function getCardExpense({ title, category, date, amount }, colorMoney) {
 
 function getRowExpense({ mobills, nubank }) {
   const colorMoney =
-    mobills.amount === nubank.amount ? 
+    mobills.amount === nubank.amount ?
       'success' :
-      (Math.abs(mobills.amount - nubank.amount) < 0.05 ? 
+      (Math.abs(mobills.amount - nubank.amount) < 0.05 ?
         'warning' :
         'error');
 
@@ -42,50 +40,34 @@ function getRowExpense({ mobills, nubank }) {
   );
 }
 
-export default function Matches() {
-  const [data, setData] = useState(undefined);
-  const [matches, setMatches] = useState(undefined);
-
-  useEffect(() => {
-    document.title = 'Nubills';
-    console.log('In useEffect!', process.env.REACT_APP_NODE);
-    axios.get(process.env.REACT_APP_NODE, { params: { openMonth: '2021-07', mobillsFileName: '' } }).then((res) => {
-      console.log(res.data);
-      setData(res.data);
-      setMatches(res.data.matches)
-    }).catch((err) => {
-      console.log(err);
-    });
-  }, []);
-
+export default function Matches(props) {
+  const matches = props.matches;
   return (
-    <div className='Nubills'>
+    <>
       {matches ?
-        <div className='matches'>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant='h1' sx={{ textAlign: 'center' }}>
-              Matches
-            </Typography>
-            <Divider/>
-            <Grid container spacing={2}>
-              <Grid container item spacing={1}>
-                <Grid item xs>
-                  <Typography variant='h2' sx={{ textAlign: 'center' }}>
-                    Mobills
-                  </Typography>
-                </Grid>
-                <Grid item xs>
-                  <Typography variant='h2' sx={{ textAlign: 'center' }}>
-                    NuBank
-                  </Typography>
-                </Grid>
+        <Box sx={{ flexGrow: 1, width: '1500px', margin: '0 auto' }} className='matches'>
+          <Typography variant='h1' sx={{ textAlign: 'center' }}>
+            Matches
+          </Typography>
+          <Divider />
+          <Grid container spacing={2}>
+            <Grid container item spacing={1}>
+              <Grid item xs>
+                <Typography variant='h2' sx={{ textAlign: 'center' }}>
+                  Mobills
+                </Typography>
               </Grid>
-              {Object.keys(matches).slice(1).map((item, idx) => getRowExpense(matches[item]))}
+              <Grid item xs>
+                <Typography variant='h2' sx={{ textAlign: 'center' }}>
+                  NuBank
+                </Typography>
+              </Grid>
             </Grid>
-          </Box>
-        </div>
+            {Object.keys(matches).slice(1).map((item, idx) => getRowExpense(matches[item]))}
+          </Grid>
+        </Box>
         :
         null}
-    </div>
+    </>
   );
 }
