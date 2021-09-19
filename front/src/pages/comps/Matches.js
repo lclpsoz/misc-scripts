@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Grid, Stack, Paper, Chip, Typography, Divider, Fab } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon} from '@mui/icons-material';
+import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 
 /**
  * Style for item Cards
@@ -20,7 +20,7 @@ const ItemText = styled(Paper)(({ theme }) => ({
  */
 function itemCard({ title, category, date, amount }, colorMoney) {
   return (
-    <Grid item xs={12} sx={{padding: 1}} >
+    <Grid item xs={12} sx={{ padding: 1 }} >
       <Paper>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -42,22 +42,22 @@ function itemCard({ title, category, date, amount }, colorMoney) {
  * @param {*} param0 
  * @returns 
  */
-function ItemCol({data, colorMoney, amountCardsToShow, setAmountCardsToShow}) {
+function ItemCol({ data, colorMoney, amountCardsToShow, setAmountCardsToShow }) {
   const [expanded, setExpanded] = useState(false);
 
   const arrayData = Object.keys(data);
   return (
-    <Grid container item xs={6} sx={{maxWidth: '350px'}} direction='row' sepacing={1} columns={1}>
+    <Grid container item xs={6} sx={{ maxWidth: '350px' }} direction='row' sepacing={1} columns={1}>
       {arrayData.slice(0, amountCardsToShow).map((item, idx) => itemCard(data[item], colorMoney))}
       <Grid container item alignItems='center' justifyContent='center'>
-        { arrayData.length > 2 ?
+        {arrayData.length > 2 ?
           (
             expanded ?
-              <Fab size='small' onClick={() => {setAmountCardsToShow(2); setExpanded(false);} }>
+              <Fab size='small' onClick={() => { setAmountCardsToShow(2); setExpanded(false); }}>
                 <ExpandLessIcon />
               </Fab>
               :
-              <Fab size='small' onClick={() => {setAmountCardsToShow(arrayData.length); setExpanded(true);}}>
+              <Fab size='small' onClick={() => { setAmountCardsToShow(arrayData.length); setExpanded(true); }}>
                 <ExpandMoreIcon />
               </Fab>
           )
@@ -74,7 +74,7 @@ function ItemCol({data, colorMoney, amountCardsToShow, setAmountCardsToShow}) {
  * @param {[nubankData, mobillsData]} param0 
  * @returns 
  */
-function ItemRow([ nubank, mobills ]) {
+function ItemRow([nubank, mobills]) {
   const [amountCardsToShow, setAmountCardsToShow] = useState(2);
 
   // Set color of money based on delta between totals
@@ -91,7 +91,7 @@ function ItemRow([ nubank, mobills ]) {
         <Divider>R$ TOTAL LEFT VS R$ TOTAL RIGHT</Divider>
       </Grid>
       <Grid
-        wrap='nowrap' container item xs={12} spacing={0} sx={{maxWidth: '750px'}}
+        wrap='nowrap' container item xs={12} spacing={0} sx={{ maxWidth: '750px' }}
         justifyContent='space-around' direction='row'>
         <ItemCol
           data={mobills}
