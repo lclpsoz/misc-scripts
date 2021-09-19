@@ -68,7 +68,12 @@ class NubankInfo:
                 lst = os.path.getmtime(full_path_file)
                 lst_path = full_path_file
         diff_time = time() - lst
-        if diff_time > EXPIRE_SECONDS: # More than one hour ago
+        request_data = diff_time > EXPIRE_SECONDS
+        if request_data and lst > 0: # There is a file, but is probably old
+            ans = input('Do you want to request new data? (y/n) ')
+            if 'n' in ans.lower():
+                request_data = False
+        if request_data: # More than one hour ago
             bill_details = self.request_bill_by_field('open_date', target_bill_open_date)
         else:
             with open(lst_path, 'r') as f:
