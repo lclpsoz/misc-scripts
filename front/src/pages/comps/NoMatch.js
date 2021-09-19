@@ -181,7 +181,8 @@ export default function NoMatch(props) {
           bottom: 20,
           left: '0',
           position: 'fixed',
-          zIndex: 1
+          zIndex: 1,
+          pointerEvents: 'none'
         }}>
         <Grid item container xs={12} direction='row' justifyContent="center" alignItems='center'>
           <TextField
@@ -192,12 +193,12 @@ export default function NoMatch(props) {
             onChange={(event) => {
               props.setOpenMonth(event.target.value);
             }}
-            sx={{ width: '100px', background: 'white' }}
+            sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
           />
           <IconButton
             aria-label='save-open-month' direction='column'
             alignContent='flex-start'
-            sx={{ background: 'white' }}
+            sx={{ background: 'white', pointerEvents: 'auto' }}
             onClick={() => {
               setLoading(true);
               props.updateData().then(() => setLoading(false));
@@ -212,6 +213,7 @@ export default function NoMatch(props) {
             variant='contained'
             onClick={handleSubmit}
             endIcon={<SaveIcon />}
+            sx={{ pointerEvents: 'auto' }}
           >
             Save matches
           </Button>
