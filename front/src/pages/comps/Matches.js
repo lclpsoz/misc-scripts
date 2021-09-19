@@ -126,7 +126,7 @@ export default function Matches(props) {
           </Typography>
           <Divider />
           <Grid container spacing={2}>
-            <Grid container item xs={12} spacing={1}>
+            <Grid container wrap='nowrap' item xs={12} spacing={1}>
               <Grid item xs>
                 <Typography variant='h2' sx={{ textAlign: 'center' }}>
                   Mobills

@@ -27,7 +27,6 @@ function Nubills() {
   useEffect(() => {
     document.title = 'Nubills';
     console.log('In Nubills useEffect!', process.env.REACT_APP_NODE);
-    updateData();
   }, []);
 
   return (
