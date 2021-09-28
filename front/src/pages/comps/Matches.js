@@ -74,9 +74,8 @@ function ItemCol({ data, colorMoney, amountCardsToShow, setAmountCardsToShow }) 
  * @param {[nubankData, mobillsData]} param0 
  * @returns 
  */
-function ItemRow([nubank, mobills]) {
+function ItemRow({nubank, mobills}) {
   const [amountCardsToShow, setAmountCardsToShow] = useState(2);
-
   // Set color of money based on delta between totals
   const colorMoney =
     mobills.amount === nubank.amount ?
