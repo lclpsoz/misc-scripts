@@ -131,11 +131,14 @@ export default function NoMatch(props) {
 
   const handleSubmit = (event) => {
     setLoading(true);
-    const current_match = [[], []];
+    const current_match = {
+      'nubank': [],
+      'mobills': []
+    };
     for (const item of nubankSelect)
-      current_match[0].push(item['id']);
+      current_match['nubank'].push(item['id']);
     for (const item of mobillsSelect)
-      current_match[1].push(item['id']);
+      current_match['mobills'].push(item['id']);
 
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
       { openMonth: props.openMonth, matches: [current_match] },

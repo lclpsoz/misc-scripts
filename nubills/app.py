@@ -124,7 +124,8 @@ def add_match():
             if mobills_month_data[mobills_id]['count'] == 0:
                 del mobills_month_data[mobills_id]
 
-    for [nubank_ids, mobills_ids] in matches_local:
+    for match_local in matches_local:
+        [nubank_ids, mobills_ids] = match_local['nubank'], match_local['mobills']
         for nubank_id in nubank_ids:
             if nubank_id in nubank_ids_new_matches:
                 return ({
@@ -144,7 +145,7 @@ def add_match():
     
     match_was_inserted = False
     for match in matches_new:
-        if len(match[0]) > 0 and len(match[1]) > 0:
+        if len(match['mobills']) > 0 and len(match['nubank']) > 0:
             matches_local.append(match)
             match_was_inserted = True
     
