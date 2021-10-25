@@ -36,6 +36,7 @@ export default function NoMatch(props) {
     setNubankTotal(0);
   }, [props]);
 
+  // TODO: Move submition handling to parent component
   const handleSubmit = (event) => {
     setLoading(true);
     const current_match = {
@@ -60,6 +61,7 @@ export default function NoMatch(props) {
         console.log(err.response);
       }).then(() => setLoading(false));
   };
+  // END OF TODO
 
   return (
     <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ maxWidth: '750px' }}>
@@ -83,6 +85,8 @@ export default function NoMatch(props) {
           setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal}
         />
       </Stack>
+
+      {/* TODO: move this buttons to parent component */}
       <Grid container justifyContent='center' alignItems='center' spacing={1}
         sx={{
           margin: 0,
@@ -130,6 +134,7 @@ export default function NoMatch(props) {
           </Button>
         </Grid>
       </Grid>
+      {/* END OF TODO */}
     </Box>
   );
 }
