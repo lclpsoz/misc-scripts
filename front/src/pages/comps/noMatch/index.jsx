@@ -67,7 +67,7 @@ export default function NoMatch(props) {
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
-        <CircularProgress color="inherit" />
+        <CircularProgress color='inherit' />
       </Backdrop>
       <Typography variant='h1' sx={{ textAlign: 'center' }}>
         No Match
@@ -83,7 +83,7 @@ export default function NoMatch(props) {
           setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal}
         />
       </Stack>
-      <Grid container justifyContent="center" alignItems='center' spacing={1}
+      <Grid container justifyContent='center' alignItems='center' spacing={1}
         sx={{
           margin: 0,
           top: 'auto',
@@ -93,12 +93,13 @@ export default function NoMatch(props) {
           position: 'fixed',
           zIndex: 1,
           pointerEvents: 'none'
-        }}>
-        <Grid item container xs={12} direction='row' justifyContent="center" alignItems='center'>
+        }}
+      >
+        <Grid item container xs={12} direction='row' justifyContent='center' alignItems='center'>
           <TextField
-            id="open-month"
-            label="Open month"
-            variant="filled"
+            id='open-month'
+            label='Open month'
+            variant='filled'
             value={props.openMonth}
             onChange={(event) => {
               props.setOpenMonth(event.target.value);
