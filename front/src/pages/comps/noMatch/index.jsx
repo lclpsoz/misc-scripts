@@ -1,21 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
-  Box, Grid, Stack, Paper, Chip, Typography, Divider,
+  Box, Grid, Stack, Typography, Divider,
   Button, Backdrop, CircularProgress, TextField, IconButton
 } from '@mui/material'
 import { Save as SaveIcon } from '@mui/icons-material'
-import { styled } from '@mui/material/styles'
 import axios from 'axios';
 
-const ItemText = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body1,
-  padding: theme.spacing(1),
-  color: theme.palette.text.primary
-}));
-
-function not(a, b) {
-  return a.filter((value) => b.indexOf(value) === -1);
-}
+import StackNoMatch from './StackNoMatch';
 
 function compare(a, b) {
   if (a.amount > b.amount)
@@ -27,77 +18,6 @@ function compare(a, b) {
   if (a.date.split('/').reverse().join('-') > b.date.split('/').reverse().join('-'))
     return 1;
   return 0;
-}
-
-function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnselect, setTotal, selected) {
-  const { title, category, date, amount, id } = item;
-  const handleChange = (event) => {
-    if (!selected) {
-      setTotal(valTotal + item['amount']);
-      setSelect(valSelect.concat(item).sort(compare));
-      setUnselect(not(valUnselect, [item]));
-    }
-    else {
-      setTotal(valTotal - item['amount']);
-      setUnselect(valUnselect.concat(item).sort(compare));
-      setSelect(not(valSelect, [item]));
-    }
-  };
-
-  return (
-    <Paper>
-      <Grid container spacing={1} onClick={handleChange} sx={{ cursor: 'pointer' }}>
-        <Grid item xs={12}>
-          <Stack justifyContent='space-around' direction='row'>
-            <Chip label={date} sx={{ cursor: 'pointer' }} />
-            <Chip label={category} sx={{ cursor: 'pointer' }} />
-            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} sx={{ cursor: 'pointer' }} />
-          </Stack>
-        </Grid>
-        <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
-      </Grid>
-    </Paper>
-  );
-}
-
-function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, setSelected, setUnselected, setTotal }) {
-  const colorMoney =
-    valTotal === valTotalOther ?
-      'success' :
-      (Math.abs(valTotal - valTotalOther) < 5 ?
-        'warning' :
-        'error');
-  return (
-    <>
-      <Stack spacing={2} sx={{ maxWidth: '350px' }}>
-        <Typography variant='h2' sx={{ textAlign: 'center' }}>
-          {name}
-        </Typography>
-
-        <Box>
-          <Divider withChildren sx={{ textAlign: 'center' }}>
-            <Typography variant='h5'>
-              Selected
-            </Typography>
-          </Divider>
-        </Box>
-        {Object.keys(selected).map((item, idx) =>
-          CardExpense(selected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, true))}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Chip color={colorMoney} label={`Total: R$ ${(valTotal / 100).toFixed(2)}`} />
-        </Box>
-
-        <Box>
-          <Divider withChildren sx={{ textAlign: 'center' }}>
-            <Typography variant='h5'>
-              Not selected
-            </Typography>
-          </Divider>
-        </Box>
-        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, false))}
-      </Stack>
-    </>
-  )
 }
 
 export default function NoMatch(props) {
@@ -125,8 +45,6 @@ export default function NoMatch(props) {
     setNubankUnselect(nuList.sort(compare));
     setNubankSelect([]);
     setNubankTotal(0);
-
-
   }, [props]);
 
   const handleSubmit = (event) => {
