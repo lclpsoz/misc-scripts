@@ -15,7 +15,7 @@ function Nubills() {
     // Set minimum amount of cards to show in Matches
     const resMatches = res.data.matches;
     resMatches.forEach((item, idx) => {
-      resMatches[idx].amountCardsToShow = 2;
+      resMatches[idx].amountCardsToShow = process.env.REACT_APP_AMOUNT_COLLAPSED_CARD;
     });
     setMatches(resMatches);
     setMobillsNoMatch(res.data.mobillsNoMatch);

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Box, Grid, Stack, Paper, Chip, Typography, Divider, Fab } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
@@ -9,22 +8,24 @@ import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@mui
 const ItemText = styled(Paper)(({ theme }) => ({
   ...theme.typography.h6,
   padding: theme.spacing(1),
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
 /**
  * Return Grid item for a Card representing of an item
- * @param {mobillsItemObject} param0 
- * @param {*} colorMoney 
- * @returns 
+ * @param {mobillsItemObject} param0
+ * @param {*} colorMoney
+ * @returns
  */
-function itemCard({ title, category, date, amount }, colorMoney) {
+function itemCard({
+  title, category, date, amount,
+}, colorMoney) {
   return (
-    <Grid item xs={12} sx={{ padding: 1 }} >
+    <Grid item xs={12} sx={{ padding: 1 }}>
       <Paper>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Stack justifyContent='space-around' direction='row'>
+            <Stack justifyContent="space-around" direction="row">
               <Chip label={date} />
               <Chip label={category} />
               <Chip label={`R$ ${(amount / 100).toFixed(2)}`} color={colorMoney} />
@@ -39,25 +40,31 @@ function itemCard({ title, category, date, amount }, colorMoney) {
 
 /**
  * Return column of items
- * @param {*} param0 
- * @returns 
+ * @param {*} param0
+ * @returns
  */
-function ItemCol({ data, colorMoney, amountCardsToShow, setAmountCardsToShow }) {
-  const [expanded, setExpanded] = useState(false);
-
+function ItemCol({ data, colorMoney, amountCardsToShow, setRowProp }) {
   const arrayData = Object.keys(data);
+  const expanded = amountCardsToShow > process.env.REACT_APP_AMOUNT_COLLAPSED_CARD;
+
   return (
     <Grid container item xs={6} sx={{ maxWidth: '350px' }} direction='row' sepacing={1} columns={1}>
       {arrayData.slice(0, amountCardsToShow).map((item, idx) => itemCard(data[item], colorMoney))}
       <Grid container item alignItems='center' justifyContent='center'>
-        {arrayData.length > 2 ?
+        {arrayData.length > process.env.REACT_APP_AMOUNT_COLLAPSED_CARD ?
           (
             expanded ?
-              <Fab size='small' onClick={() => { setAmountCardsToShow(2); setExpanded(false); }}>
+              <Fab size='small' onClick={() => {
+                setRowProp('amountCardsToShow', process.env.REACT_APP_AMOUNT_COLLAPSED_CARD);
+              }}
+              >
                 <ExpandLessIcon />
               </Fab>
               :
-              <Fab size='small' onClick={() => { setAmountCardsToShow(arrayData.length); setExpanded(true); }}>
+              <Fab size='small' onClick={() => {
+                setRowProp('amountCardsToShow', arrayData.length);
+              }}
+              >
                 <ExpandMoreIcon />
               </Fab>
           )
@@ -66,34 +73,32 @@ function ItemCol({ data, colorMoney, amountCardsToShow, setAmountCardsToShow }) 
         }
       </Grid>
     </Grid>
-  )
+  );
 }
 
 /**
  * Return row of items
- * @param {[nubankData, mobillsData]} param0 
- * @returns 
+ * @param {[nubankData, mobillsData]} param0
+ * @returns
  */
-function ItemRow(setMatches, matches, item, setAmountCardsToShowGeneric) {
+function ItemRow(setMatches, matches, item) {
   var nubank = matches[item].nubank;
   var mobills = matches[item].mobills;
 
   // Set color of money based on delta between totals
-  const colorMoney =
-    mobills.amount === nubank.amount ?
-      'success' :
-      (Math.abs(mobills.amount - nubank.amount) < 0.05 ?
-        'warning' :
-        'error');
+  let colorMoney;
+  if (mobills.amount === nubank.amount) colorMoney = 'success';
+  else if (Math.abs(mobills.amount - nubank.amount) < 0.05) colorMoney = 'warning';
+  else colorMoney = 'error';
 
-  const setAmountCardsToShow = (amountCardsToShow) => {
+  const setRowProp = (key, value) => {
     setMatches([
       ...matches.slice(0, item),
       {
         ...matches[item],
-        amountCardsToShow: amountCardsToShow
+        [key]: value,
       },
-      ...matches.slice(parseInt(item)+1)
+      ...matches.slice(parseInt(item, 10) + 1),
     ]);
   };
 
@@ -109,13 +114,15 @@ function ItemRow(setMatches, matches, item, setAmountCardsToShowGeneric) {
           data={mobills}
           colorMoney={colorMoney}
           amountCardsToShow={matches[item].amountCardsToShow}
-          setAmountCardsToShow={setAmountCardsToShow}
+          expanded={matches[item].expanded}
+          setRowProp={setRowProp}
         />
         <ItemCol
           data={nubank}
           colorMoney={colorMoney}
           amountCardsToShow={matches[item].amountCardsToShow}
-          setAmountCardsToShow={setAmountCardsToShow}
+          expanded={matches[item].expanded}
+          setRowProp={setRowProp}
         />
       </Grid>
     </>
@@ -124,12 +131,11 @@ function ItemRow(setMatches, matches, item, setAmountCardsToShowGeneric) {
 
 /**
  * Matches component
- * @param {*} props 
- * @returns 
+ * @param {*} props
+ * @returns
  */
 export default function Matches(props) {
-  const matches = props.matches;
-  const setMatches = props.setMatches;
+  const { matches, setMatches } = props;
 
   return (
     <>
@@ -152,7 +158,7 @@ export default function Matches(props) {
                 </Typography>
               </Grid>
             </Grid>
-            { Object.keys(matches).map((item, idx) => ItemRow(setMatches, matches, item)) }
+            {Object.keys(matches).map((item, idx) => ItemRow(setMatches, matches, item))}
           </Grid>
         </Box>
         :
