@@ -6,7 +6,8 @@ def update_matches(matches, nubank_month_data, mobills_month_data):
     """
     # Filter matches to only items that still exist
     matches_cleaned = []
-    for [nubank_ids, mobills_ids] in matches:
+    for match in matches:
+        [nubank_ids, mobills_ids] = match['nubank'], match['mobills']
         nubank_ids_filtered = []
         for nu_id in nubank_ids:
             if nu_id in nubank_month_data:

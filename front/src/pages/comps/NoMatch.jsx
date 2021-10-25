@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Stack, Paper, Chip, Typography, Divider,
-  Button, Backdrop, CircularProgress, TextField, IconButton } from '@mui/material'
-import { Save as SaveIcon, Refresh as RefreshIcon } from '@mui/icons-material'
+import {
+  Box, Grid, Stack, Paper, Chip, Typography, Divider,
+  Button, Backdrop, CircularProgress, TextField, IconButton
+} from '@mui/material'
+import { Save as SaveIcon } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import axios from 'axios';
 
@@ -44,12 +46,12 @@ function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnsel
 
   return (
     <Paper>
-      <Grid container spacing={1} onClick={handleChange} sx={{cursor: 'pointer'}}>
+      <Grid container spacing={1} onClick={handleChange} sx={{ cursor: 'pointer' }}>
         <Grid item xs={12}>
           <Stack justifyContent='space-around' direction='row'>
-            <Chip label={date}  sx={{cursor: 'pointer'}}/>
-            <Chip label={category}  sx={{cursor: 'pointer'}}/>
-            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} sx={{cursor: 'pointer'}} />
+            <Chip label={date} sx={{ cursor: 'pointer' }} />
+            <Chip label={category} sx={{ cursor: 'pointer' }} />
+            <Chip label={`R$ ${(amount / 100).toFixed(2)}`} sx={{ cursor: 'pointer' }} />
           </Stack>
         </Grid>
         <Grid item xs={12} sx={{ textAlign: 'center' }}><ItemText elevation={0}>{title}</ItemText></Grid>
@@ -60,7 +62,7 @@ function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnsel
 
 function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, setSelected, setUnselected, setTotal }) {
   const colorMoney =
-  valTotal === valTotalOther ?
+    valTotal === valTotalOther ?
       'success' :
       (Math.abs(valTotal - valTotalOther) < 5 ?
         'warning' :
@@ -81,8 +83,8 @@ function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, set
         </Box>
         {Object.keys(selected).map((item, idx) =>
           CardExpense(selected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, true))}
-        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <Chip color={colorMoney} label={`Total: R$ ${(valTotal / 100).toFixed(2)}`}/>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Chip color={colorMoney} label={`Total: R$ ${(valTotal / 100).toFixed(2)}`} />
         </Box>
 
         <Box>
@@ -129,24 +131,27 @@ export default function NoMatch(props) {
 
   const handleSubmit = (event) => {
     setLoading(true);
-    const current_match = [[], []];
+    const current_match = {
+      'nubank': [],
+      'mobills': []
+    };
     for (const item of nubankSelect)
-      current_match[0].push(item['id']);
+      current_match['nubank'].push(item['id']);
     for (const item of mobillsSelect)
-      current_match[1].push(item['id']);
+      current_match['mobills'].push(item['id']);
 
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
-      { openMonth: props.openMonth, matches: [ current_match ] },
+      { openMonth: props.openMonth, matches: [current_match] },
       { 'Content-Type': 'application/json' }).then((res) => {
-      if(res.status == 201)
-        props.updateData().then(() => setLoading(false));
-      else
-        setLoading(false);
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-      console.log(err.response);
-    }).then(() => setLoading(false));
+        if (res.status === 201)
+          props.updateData().then(() => setLoading(false));
+        else
+          setLoading(false);
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+        console.log(err.response);
+      }).then(() => setLoading(false));
   };
 
   return (
@@ -179,7 +184,8 @@ export default function NoMatch(props) {
           bottom: 20,
           left: '0',
           position: 'fixed',
-          zIndex: 1
+          zIndex: 1,
+          pointerEvents: 'none'
         }}>
         <Grid item container xs={12} direction='row' justifyContent="center" alignItems='center'>
           <TextField
@@ -190,16 +196,16 @@ export default function NoMatch(props) {
             onChange={(event) => {
               props.setOpenMonth(event.target.value);
             }}
-            sx={{ width: '100px', background: 'white' }}
+            sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
           />
           <IconButton
             aria-label='save-open-month' direction='column'
             alignContent='flex-start'
-            sx={{ background: 'white' }}
+            sx={{ background: 'white', pointerEvents: 'auto' }}
             onClick={() => {
-            setLoading(true);
-            props.updateData().then(() => setLoading(false));
-          }}
+              setLoading(true);
+              props.updateData().then(() => setLoading(false));
+            }}
           >
             <SaveIcon />
           </IconButton>
@@ -210,6 +216,7 @@ export default function NoMatch(props) {
             variant='contained'
             onClick={handleSubmit}
             endIcon={<SaveIcon />}
+            sx={{ pointerEvents: 'auto' }}
           >
             Save matches
           </Button>

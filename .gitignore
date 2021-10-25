@@ -8,9 +8,9 @@
 __pycache__
 
 ## Nubills
-/nubills/matchs/
-/nubills/mobills/
-/nubills/nubank/
+/nubills/matchs*/
+/nubills/mobills*/
+/nubills/nubank*/
 
 ## Yarn
 
