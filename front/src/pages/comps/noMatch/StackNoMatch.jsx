@@ -1,16 +1,35 @@
 import {
-  Box, Stack, Chip, Typography, Divider, TextField
+  Box, Stack, Chip, Typography, Divider, TextField, IconButton
 } from '@mui/material';
+import { SelectAll as IconSelectAll } from '@mui/icons-material';
 
 import CardExpense from './CardExpense';
+import compareDate from './compareDate';
+
+function not(a, b) {
+  return a.filter((value) => b.indexOf(value) === -1);
+}
 
 export default function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, valFilter, setSelected, setUnselected, setTotal, setFilter }) {
+  const selectAll = () => {
+    let valNow = 0;
+    for (const item of unselected) {
+      valNow += item['amount'];
+      selected = selected.concat(item).sort(compareDate);
+      unselected = not(unselected, [item]);
+    }
+    setTotal(valTotal + valNow);
+    setSelected(selected);
+    setUnselected(unselected);
+  };
+
   const colorMoney =
     valTotal === valTotalOther ?
       'success' :
       (Math.abs(valTotal - valTotalOther) < 5 ?
         'warning' :
         'error');
+
   return (
     <>
       <Stack spacing={2} sx={{ maxWidth: '350px' }}>
@@ -52,7 +71,16 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
               setFilter(event.target.value);
             }}
             sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
+            
           />
+          <IconButton
+            aria-label='select-all-unselected' direction='column'
+            alignContent='flex-start'
+            sx={{ background: 'white', pointerEvents: 'auto' }}
+            onClick={() => selectAll()}
+          >
+            <IconSelectAll />
+          </IconButton>
         </Box>
         {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, false))}
       </Stack>
