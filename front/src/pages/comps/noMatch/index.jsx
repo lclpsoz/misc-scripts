@@ -7,18 +7,7 @@ import { Save as SaveIcon } from '@mui/icons-material'
 import axios from 'axios';
 
 import StackNoMatch from './StackNoMatch';
-
-function compare(a, b) {
-  if (a.amount > b.amount)
-    return -1;
-  if (a.amount < b.amount)
-    return 1;
-  if (a.date.split('/').reverse().join('-') < b.date.split('/').reverse().join('-'))
-    return -1;
-  if (a.date.split('/').reverse().join('-') > b.date.split('/').reverse().join('-'))
-    return 1;
-  return 0;
-}
+import compareDate from './compareDate'
 
 export default function NoMatch(props) {
   const [mobillsSelect, setMobillsSelect] = useState([]);
@@ -35,14 +24,14 @@ export default function NoMatch(props) {
     const mobList = [];
     for (const item in props.mobillsNoMatch)
       mobList.push(props.mobillsNoMatch[item])
-    setMobillsUnselect(mobList.sort(compare));
+    setMobillsUnselect(mobList.sort(compareDate));
     setMobillsSelect([]);
     setMobillsTotal(0);
 
     const nuList = [];
     for (const item in props.nubankNoMatch)
       nuList.push(props.nubankNoMatch[item])
-    setNubankUnselect(nuList.sort(compare));
+    setNubankUnselect(nuList.sort(compareDate));
     setNubankSelect([]);
     setNubankTotal(0);
   }, [props]);
