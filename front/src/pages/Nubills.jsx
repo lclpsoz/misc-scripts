@@ -11,24 +11,19 @@ function Nubills() {
 
   const [openMonth, setOpenMonth] = useState('');
 
-  const updateData = () => {
-    console.log('In Nubills updateData!', process.env.REACT_APP_NODE);
-    return axios.get(process.env.REACT_APP_NODE, { params: { openMonth: openMonth, mobillsFileName: '' } }).then((res) => {
-      console.log('res.data:');
-      console.log(res.data);
-
-      // Set minimum amount of cards to show in Matches
-      var resMatches = res.data.matches;
-      for(var i in resMatches)
-        resMatches[i].amountCardsToShow = 2;
-      setMatches(resMatches);
-      setMobillsNoMatch(res.data.mobillsNoMatch);
-      setNubankNoMatch(res.data.nubankNoMatch);
-    }).catch((err) => {
-      console.log(err);
-      console.log(err.response);
+  const updateData = () => axios.get(process.env.REACT_APP_NODE, { params: { openMonth, mobillsFileName: '' } }).then((res) => {
+    // Set minimum amount of cards to show in Matches
+    const resMatches = res.data.matches;
+    resMatches.forEach((item, idx) => {
+      resMatches[idx].amountCardsToShow = 2;
     });
-  };
+    setMatches(resMatches);
+    setMobillsNoMatch(res.data.mobillsNoMatch);
+    setNubankNoMatch(res.data.nubankNoMatch);
+  }).catch((err) => {
+    console.log(err);
+    console.log(err.response);
+  });
 
   useEffect(() => {
     document.title = 'Nubills';
@@ -36,12 +31,15 @@ function Nubills() {
   }, []);
 
   return (
-    <Box sx={{maxWidth: '1500px', margin: '0 auto'}}>
-      <Stack direction='row' spacing={3} justifyContent='space-around'>
-        <Matches matches={matches} setMatches={setMatches}/>
+    <Box sx={{ maxWidth: '1500px', margin: '0 auto' }}>
+      <Stack direction="row" spacing={3} justifyContent="space-around">
+        <Matches matches={matches} setMatches={setMatches} />
         <NoMatch
-          mobillsNoMatch={mobillsNoMatch} nubankNoMatch={nubankNoMatch} updateData={updateData}
-          openMonth={openMonth} setOpenMonth={setOpenMonth}
+          mobillsNoMatch={mobillsNoMatch}
+          nubankNoMatch={nubankNoMatch}
+          updateData={updateData}
+          openMonth={openMonth}
+          setOpenMonth={setOpenMonth}
         />
       </Stack>
     </Box>
