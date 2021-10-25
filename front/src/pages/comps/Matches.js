@@ -74,8 +74,10 @@ function ItemCol({ data, colorMoney, amountCardsToShow, setAmountCardsToShow }) 
  * @param {[nubankData, mobillsData]} param0 
  * @returns 
  */
-function ItemRow({nubank, mobills}) {
-  const [amountCardsToShow, setAmountCardsToShow] = useState(2);
+function ItemRow(setMatches, matches, item, setAmountCardsToShowGeneric) {
+  var nubank = matches[item].nubank;
+  var mobills = matches[item].mobills;
+
   // Set color of money based on delta between totals
   const colorMoney =
     mobills.amount === nubank.amount ?
@@ -83,6 +85,17 @@ function ItemRow({nubank, mobills}) {
       (Math.abs(mobills.amount - nubank.amount) < 0.05 ?
         'warning' :
         'error');
+
+  const setAmountCardsToShow = (amountCardsToShow) => {
+    setMatches([
+      ...matches.slice(0, item),
+      {
+        ...matches[item],
+        amountCardsToShow: amountCardsToShow
+      },
+      ...matches.slice(parseInt(item)+1)
+    ]);
+  };
 
   return (
     <>
@@ -95,13 +108,13 @@ function ItemRow({nubank, mobills}) {
         <ItemCol
           data={mobills}
           colorMoney={colorMoney}
-          amountCardsToShow={amountCardsToShow}
+          amountCardsToShow={matches[item].amountCardsToShow}
           setAmountCardsToShow={setAmountCardsToShow}
         />
         <ItemCol
           data={nubank}
           colorMoney={colorMoney}
-          amountCardsToShow={amountCardsToShow}
+          amountCardsToShow={matches[item].amountCardsToShow}
           setAmountCardsToShow={setAmountCardsToShow}
         />
       </Grid>
@@ -116,9 +129,11 @@ function ItemRow({nubank, mobills}) {
  */
 export default function Matches(props) {
   const matches = props.matches;
+  const setMatches = props.setMatches;
+
   return (
     <>
-      {matches ?
+      {matches && matches[0].mobills ?
         <Box sx={{ flexGrow: 1, margin: '0 auto', maxWidth: '750px' }} className='matches'>
           <Typography variant='h1' sx={{ textAlign: 'center' }}>
             Matches
@@ -137,7 +152,7 @@ export default function Matches(props) {
                 </Typography>
               </Grid>
             </Grid>
-            {Object.keys(matches).map((item, idx) => ItemRow(matches[item]))}
+            { Object.keys(matches).map((item, idx) => ItemRow(setMatches, matches, item)) }
           </Grid>
         </Box>
         :

@@ -143,7 +143,7 @@ export default function NoMatch(props) {
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
       { openMonth: props.openMonth, matches: [current_match] },
       { 'Content-Type': 'application/json' }).then((res) => {
-        if (res.status == 201)
+        if (res.status === 201)
           props.updateData().then(() => setLoading(false));
         else
           setLoading(false);
