@@ -13,6 +13,7 @@ export default function NoMatch(props) {
   const [mobills, setMobillsState] = useState({
     selected: [],
     unselected: [],
+    unselectedShow: [],
     total: 0,
     filter: '',
   });
@@ -22,6 +23,7 @@ export default function NoMatch(props) {
   const [nubank, setNubankState] = useState({
     selected: [],
     unselected: [],
+    unselectedShow: [],
     total: 0,
     filter: '',
   });
@@ -32,11 +34,8 @@ export default function NoMatch(props) {
 
   useEffect(() => {
     const mobList = [];
-    for (const item in props.mobillsNoMatch) {
-      const curItem = props.mobillsNoMatch[item];
-      if (mobills.filter === '' || curItem.title.toLowerCase().includes(mobills.filter.toLowerCase()))
-        mobList.push(curItem);
-    }
+    for (const item in props.mobillsNoMatch)
+      mobList.push(props.mobillsNoMatch[item]);
     setMobillsFields({
       'unselected': mobList.sort(compareDate),
       'selected': [],
@@ -44,17 +43,36 @@ export default function NoMatch(props) {
     });
 
     const nuList = [];
-    for (const item in props.nubankNoMatch) {
-      const curItem = props.nubankNoMatch[item];
-      if (nubank.filter === '' || curItem.title.toLowerCase().includes(nubank.filter.toLowerCase()))
-        nuList.push(curItem);
-    }
+    for (const item in props.nubankNoMatch)
+      nuList.push(props.nubankNoMatch[item]);
     setNubankFields({
       'unselected': nuList.sort(compareDate),
       'selected': [],
       'total': 0,
     });
-  }, [props, mobills.filter, nubank.filter]);
+  }, [props]);
+
+  useEffect(() => {
+    const mobList = [];
+    for (const item in mobills.unselected) {
+      const curItem = mobills.unselected[item];
+      if (mobills.filter === '' || curItem.title.toLowerCase().includes(mobills.filter.toLowerCase()))
+        mobList.push(curItem);
+    }
+    setMobillsFields({
+      'unselectedShow': mobList.sort(compareDate),
+    });
+
+    const nuList = [];
+    for (const item in nubank.unselected) {
+      const curItem = nubank.unselected[item];
+      if (nubank.filter === '' || curItem.title.toLowerCase().includes(nubank.filter.toLowerCase()))
+        nuList.push(curItem);
+    }
+    setNubankFields({
+      'unselectedShow': nuList.sort(compareDate),
+    });
+  }, [mobills.filter, nubank.filter, mobills.unselected, nubank.unselected]);
 
   // TODO: Move submition handling to parent component
   const handleSubmit = (event) => {
@@ -63,9 +81,9 @@ export default function NoMatch(props) {
       'nubank': [],
       'mobills': []
     };
-    for (const item of nubankSelected)
+    for (const item of nubank.selected)
       current_match['nubank'].push(item['id']);
-    for (const item of mobillsSelected)
+    for (const item of mobills.selected)
       current_match['mobills'].push(item['id']);
 
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
@@ -101,15 +119,12 @@ export default function NoMatch(props) {
 
           selected={mobills.selected}
           unselected={mobills.unselected}
+          unselectedShow={mobills.unselectedShow}
 
           valTotal={mobills.total}
           valTotalOther={nubank.total}
           valFilter={mobills.filter}
 
-          setSelected={(val) => setMobillsField('selected', val)}
-          setUnselected={(val) => setMobillsField('unselected', val)}
-
-          setTotal={(val) => setMobillsField('total', val)}
           setFilter={(val) => setMobillsField('filter', val)}
 
           setFields={(data) => setMobillsFields(data)}
@@ -119,15 +134,12 @@ export default function NoMatch(props) {
 
           selected={nubank.selected}
           unselected={nubank.unselected}
+          unselectedShow={nubank.unselectedShow}
 
           valTotal={nubank.total}
           valTotalOther={mobills.total}
           valFilter={nubank.filter}
 
-          setSelected={(val) => setNubankField('selected', val)}
-          setUnselected={(val) => setNubankField('unselected', val)}
-
-          setTotal={(val) => setNubankField('total', val)}
           setFilter={(val) => setNubankField('filter', val)}
 
           setFields={(data) => setNubankFields(data)}

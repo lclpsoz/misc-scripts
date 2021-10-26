@@ -10,10 +10,10 @@ function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-export default function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, valFilter, setFilter, setFields }) {
+export default function StackNoMatch({ name, selected, unselected, unselectedShow, valTotal, valTotalOther, valFilter, setFilter, setFields }) {
   const selectAll = () => {
     let valNow = 0;
-    for (const item of unselected) {
+    for (const item of unselectedShow) {
       valNow += item['amount'];
       selected = selected.concat(item).sort(compareDate);
       unselected = not(unselected, [item]);
@@ -110,7 +110,7 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
             <IconSelectAll />
           </IconButton>
         </Box>
-        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setFields, false))}
+        {Object.keys(unselectedShow).map((item, idx) => CardExpense(unselectedShow[item], selected, unselected, valTotal, setFields, false))}
       </Stack>
     </>
   )
