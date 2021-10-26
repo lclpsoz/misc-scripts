@@ -12,7 +12,7 @@ export default function Matches(props) {
 
   return (
     <>
-      {matches && matches[0].mobills ?
+      {matches && matches.length && matches[0].mobills ?
         <Box sx={{ flexGrow: 1, margin: '0 auto', maxWidth: '750px' }} className='matches'>
           <Typography variant='h1' sx={{ textAlign: 'center' }}>
             Matches
