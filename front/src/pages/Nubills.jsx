@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Box, Stack } from '@mui/material';
-import Matches from './comps/Matches';
-import NoMatch from './comps/NoMatch';
+import Matches from './comps/matches';
+import NoMatch from './comps/noMatch';
 
 function Nubills() {
   const [matches, setMatches] = useState(undefined);
