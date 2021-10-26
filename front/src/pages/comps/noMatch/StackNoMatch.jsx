@@ -1,7 +1,7 @@
 import {
   Box, Stack, Chip, Typography, Divider, TextField, IconButton
 } from '@mui/material';
-import { SelectAll as IconSelectAll } from '@mui/icons-material';
+import { SelectAll as IconSelectAll, ClearAll as IconClearAll } from '@mui/icons-material';
 
 import CardExpense from './CardExpense';
 import compareDate from './compareDate';
@@ -17,6 +17,18 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
       valNow += item['amount'];
       selected = selected.concat(item).sort(compareDate);
       unselected = not(unselected, [item]);
+    }
+    setTotal(valTotal + valNow);
+    setSelected(selected);
+    setUnselected(unselected);
+  };
+
+  const unselectAll = () => {
+    let valNow = 0;
+    for (const item of selected) {
+      valNow -= item['amount'];
+      unselected = unselected.concat(item).sort(compareDate);
+      selected = not(selected, [item]);
     }
     setTotal(valTotal + valNow);
     setSelected(selected);
@@ -39,11 +51,23 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
 
         <Box>
           <Divider withChildren sx={{ textAlign: 'center' }}>
+            <Stack direction='row'>
             <Typography variant='h5'>
               Selected
             </Typography>
+
+            <IconButton
+              aria-label='select-all-unselected' direction='column'
+              alignContent='flex-start'
+              sx={{ background: 'white', pointerEvents: 'auto' }}
+              onClick={() => unselectAll()}
+            >
+              <IconClearAll />
+            </IconButton>
+            </Stack>
           </Divider>
         </Box>
+
         {Object.keys(selected).map((item, idx) =>
           CardExpense(selected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, true))}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
