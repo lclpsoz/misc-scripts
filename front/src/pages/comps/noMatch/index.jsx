@@ -10,13 +10,13 @@ import StackNoMatch from './StackNoMatch';
 import compareDate from './compareDate'
 
 export default function NoMatch(props) {
-  const [mobillsSelect, setMobillsSelect] = useState([]);
-  const [mobillsUnselect, setMobillsUnselect] = useState([]);
+  const [mobillsSelected, setMobillsSelected] = useState([]);
+  const [mobillsUnselected, setMobillsUnselected] = useState([]);
   const [mobillsTotal, setMobillsTotal] = useState(0);
   const [mobillsFilter, setMobillsFilter] = useState('');
 
-  const [nubankSelect, setNubankSelect] = useState([]);
-  const [nubankUnselect, setNubankUnselect] = useState([]);
+  const [nubankSelected, setNubankSelected] = useState([]);
+  const [nubankUnselected, setNubankUnselected] = useState([]);
   const [nubankTotal, setNubankTotal] = useState(0);
   const [nubankFilter, setNubankFilter] = useState('');
 
@@ -29,8 +29,8 @@ export default function NoMatch(props) {
       if (mobillsFilter === '' || curItem.title.toLowerCase().includes(mobillsFilter.toLowerCase()))
         mobList.push(curItem);
     }
-    setMobillsUnselect(mobList.sort(compareDate));
-    setMobillsSelect([]);
+    setMobillsUnselected(mobList.sort(compareDate));
+    setMobillsSelected([]);
     setMobillsTotal(0);
 
     const nuList = [];
@@ -39,8 +39,8 @@ export default function NoMatch(props) {
       if (nubankFilter === '' || curItem.title.toLowerCase().includes(nubankFilter.toLowerCase()))
         nuList.push(curItem);
     }
-    setNubankUnselect(nuList.sort(compareDate));
-    setNubankSelect([]);
+    setNubankUnselected(nuList.sort(compareDate));
+    setNubankSelected([]);
     setNubankTotal(0);
   }, [props, mobillsFilter, nubankFilter]);
 
@@ -51,9 +51,9 @@ export default function NoMatch(props) {
       'nubank': [],
       'mobills': []
     };
-    for (const item of nubankSelect)
+    for (const item of nubankSelected)
       current_match['nubank'].push(item['id']);
-    for (const item of mobillsSelect)
+    for (const item of mobillsSelected)
       current_match['mobills'].push(item['id']);
 
     axios.post(process.env.REACT_APP_NODE + '/add-matches',
@@ -85,12 +85,36 @@ export default function NoMatch(props) {
       <Divider />
       <Stack direction='row' spacing={1}>
         <StackNoMatch
-          name='Mobills' selected={mobillsSelect} unselected={mobillsUnselect} valTotal={mobillsTotal} valTotalOther={nubankTotal} valFilter={mobillsFilter}
-          setSelected={setMobillsSelect} setUnselected={setMobillsUnselect} setTotal={setMobillsTotal} setFilter={setMobillsFilter}
+          name='Mobills'
+
+          selected={mobillsSelected}
+          unselected={mobillsUnselected}
+
+          valTotal={mobillsTotal}
+          valTotalOther={nubankTotal}
+          valFilter={mobillsFilter}
+
+          setSelected={setMobillsSelected}
+          setUnselected={setMobillsUnselected}
+
+          setTotal={setMobillsTotal}
+          setFilter={setMobillsFilter}
         />
         <StackNoMatch
-          name='NuBank' selected={nubankSelect} unselected={nubankUnselect} valTotal={nubankTotal} valTotalOther={mobillsTotal} valFilter={nubankFilter}
-          setSelected={setNubankSelect} setUnselected={setNubankUnselect} setTotal={setNubankTotal} setFilter={setNubankFilter}
+          name='NuBank'
+
+          selected={nubankSelected}
+          unselected={nubankUnselected}
+            
+          valTotal={nubankTotal}
+          valTotalOther={mobillsTotal}
+          valFilter={nubankFilter}
+
+          setSelected={setNubankSelected}
+          setUnselected={setNubankUnselected}
+          
+          setTotal={setNubankTotal}
+          setFilter={setNubankFilter}
         />
       </Stack>
 
