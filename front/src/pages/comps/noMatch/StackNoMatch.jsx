@@ -10,7 +10,7 @@ function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-export default function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, valFilter, setSelected, setUnselected, setTotal, setFilter }) {
+export default function StackNoMatch({ name, selected, unselected, valTotal, valTotalOther, valFilter, setFilter, setFields }) {
   const selectAll = () => {
     let valNow = 0;
     for (const item of unselected) {
@@ -18,9 +18,11 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
       selected = selected.concat(item).sort(compareDate);
       unselected = not(unselected, [item]);
     }
-    setTotal(valTotal + valNow);
-    setSelected(selected);
-    setUnselected(unselected);
+    setFields({
+      'total': valTotal + valNow,
+      'selected': selected,
+      'unselected': unselected,
+    });
   };
 
   const unselectAll = () => {
@@ -30,9 +32,11 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
       unselected = unselected.concat(item).sort(compareDate);
       selected = not(selected, [item]);
     }
-    setTotal(valTotal + valNow);
-    setSelected(selected);
-    setUnselected(unselected);
+    setFields({
+      'total': valTotal + valNow,
+      'selected': selected,
+      'unselected': unselected,
+    });
   };
 
   const colorMoney =
@@ -69,7 +73,7 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
         </Box>
 
         {Object.keys(selected).map((item, idx) =>
-          CardExpense(selected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, true))}
+          CardExpense(selected[item], selected, unselected, valTotal, setFields, true))}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Chip color={colorMoney} label={`Total: R$ ${(valTotal / 100).toFixed(2)}`} />
         </Box>
@@ -106,7 +110,7 @@ export default function StackNoMatch({ name, selected, unselected, valTotal, val
             <IconSelectAll />
           </IconButton>
         </Box>
-        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setSelected, setUnselected, setTotal, false))}
+        {Object.keys(unselected).map((item, idx) => CardExpense(unselected[item], selected, unselected, valTotal, setFields, false))}
       </Stack>
     </>
   )

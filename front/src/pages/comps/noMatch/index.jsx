@@ -10,15 +10,23 @@ import StackNoMatch from './StackNoMatch';
 import compareDate from './compareDate'
 
 export default function NoMatch(props) {
-  const [mobillsSelected, setMobillsSelected] = useState([]);
-  const [mobillsUnselected, setMobillsUnselected] = useState([]);
-  const [mobillsTotal, setMobillsTotal] = useState(0);
-  const [mobillsFilter, setMobillsFilter] = useState('');
+  const [mobills, setMobillsState] = useState({
+    selected: [],
+    unselected: [],
+    total: 0,
+    filter: '',
+  });
+  const setMobillsField = (key, val) => setMobillsState({ ...mobills, [key]: val });
+  const setMobillsFields = (data) => setMobillsState({ ...mobills, ...data });
 
-  const [nubankSelected, setNubankSelected] = useState([]);
-  const [nubankUnselected, setNubankUnselected] = useState([]);
-  const [nubankTotal, setNubankTotal] = useState(0);
-  const [nubankFilter, setNubankFilter] = useState('');
+  const [nubank, setNubankState] = useState({
+    selected: [],
+    unselected: [],
+    total: 0,
+    filter: '',
+  });
+  const setNubankField = (key, val) => setNubankState({ ...nubank, [key]: val });
+  const setNubankFields = (data) => setNubankState({ ...nubank, ...data });
 
   const [loading, setLoading] = useState(false);
 
@@ -26,23 +34,27 @@ export default function NoMatch(props) {
     const mobList = [];
     for (const item in props.mobillsNoMatch) {
       const curItem = props.mobillsNoMatch[item];
-      if (mobillsFilter === '' || curItem.title.toLowerCase().includes(mobillsFilter.toLowerCase()))
+      if (mobills.filter === '' || curItem.title.toLowerCase().includes(mobills.filter.toLowerCase()))
         mobList.push(curItem);
     }
-    setMobillsUnselected(mobList.sort(compareDate));
-    setMobillsSelected([]);
-    setMobillsTotal(0);
+    setMobillsFields({
+      'unselected': mobList.sort(compareDate),
+      'selected': [],
+      'total': 0,
+    });
 
     const nuList = [];
     for (const item in props.nubankNoMatch) {
       const curItem = props.nubankNoMatch[item];
-      if (nubankFilter === '' || curItem.title.toLowerCase().includes(nubankFilter.toLowerCase()))
+      if (nubank.filter === '' || curItem.title.toLowerCase().includes(nubank.filter.toLowerCase()))
         nuList.push(curItem);
     }
-    setNubankUnselected(nuList.sort(compareDate));
-    setNubankSelected([]);
-    setNubankTotal(0);
-  }, [props, mobillsFilter, nubankFilter]);
+    setNubankFields({
+      'unselected': nuList.sort(compareDate),
+      'selected': [],
+      'total': 0,
+    });
+  }, [props, mobills.filter, nubank.filter]);
 
   // TODO: Move submition handling to parent component
   const handleSubmit = (event) => {
@@ -87,34 +99,38 @@ export default function NoMatch(props) {
         <StackNoMatch
           name='Mobills'
 
-          selected={mobillsSelected}
-          unselected={mobillsUnselected}
+          selected={mobills.selected}
+          unselected={mobills.unselected}
 
-          valTotal={mobillsTotal}
-          valTotalOther={nubankTotal}
-          valFilter={mobillsFilter}
+          valTotal={mobills.total}
+          valTotalOther={nubank.total}
+          valFilter={mobills.filter}
 
-          setSelected={setMobillsSelected}
-          setUnselected={setMobillsUnselected}
+          setSelected={(val) => setMobillsField('selected', val)}
+          setUnselected={(val) => setMobillsField('unselected', val)}
 
-          setTotal={setMobillsTotal}
-          setFilter={setMobillsFilter}
+          setTotal={(val) => setMobillsField('total', val)}
+          setFilter={(val) => setMobillsField('filter', val)}
+
+          setFields={(data) => setMobillsFields(data)}
         />
         <StackNoMatch
           name='NuBank'
 
-          selected={nubankSelected}
-          unselected={nubankUnselected}
-            
-          valTotal={nubankTotal}
-          valTotalOther={mobillsTotal}
-          valFilter={nubankFilter}
+          selected={nubank.selected}
+          unselected={nubank.unselected}
 
-          setSelected={setNubankSelected}
-          setUnselected={setNubankUnselected}
-          
-          setTotal={setNubankTotal}
-          setFilter={setNubankFilter}
+          valTotal={nubank.total}
+          valTotalOther={mobills.total}
+          valFilter={nubank.filter}
+
+          setSelected={(val) => setNubankField('selected', val)}
+          setUnselected={(val) => setNubankField('unselected', val)}
+
+          setTotal={(val) => setNubankField('total', val)}
+          setFilter={(val) => setNubankField('filter', val)}
+
+          setFields={(data) => setNubankFields(data)}
         />
       </Stack>
 

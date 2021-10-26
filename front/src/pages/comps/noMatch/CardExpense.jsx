@@ -13,18 +13,22 @@ function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-export default function CardExpense(item, valSelect, valUnselect, valTotal, setSelect, setUnselect, setTotal, selected) {
+export default function CardExpense(item, valSelect, valUnselect, valTotal, setFields, selected) {
   const { title, category, date, amount, id } = item;
   const handleChange = (event) => {
     if (!selected) {
-      setTotal(valTotal + item['amount']);
-      setSelect(valSelect.concat(item).sort(compareDate));
-      setUnselect(not(valUnselect, [item]));
+      setFields({
+        'total': valTotal + item['amount'],
+        'selected': valSelect.concat(item).sort(compareDate),
+        'unselected': not(valUnselect, [item]),
+      });
     }
     else {
-      setTotal(valTotal - item['amount']);
-      setUnselect(valUnselect.concat(item).sort(compareDate));
-      setSelect(not(valSelect, [item]));
+      setFields({
+        'total': valTotal - item['amount'],
+        'unselected': valUnselect.concat(item).sort(compareDate),
+        'selected': not(valSelect, [item]),
+      });
     }
   };
 
