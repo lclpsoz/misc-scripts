@@ -8,7 +8,7 @@ import itemCard from './itemCard';
  * @param {*} param0
  * @returns
  */
-export default function ItemCol({ data, colorMoney, amountCardsToShow, setRowProp }) {
+export default function ItemCol({ data, colorMoney, amountCardsToShow, setDataProp }) {
   const arrayData = Object.keys(data);
   const expanded = amountCardsToShow > process.env.REACT_APP_AMOUNT_COLLAPSED_CARD;
 
@@ -20,14 +20,14 @@ export default function ItemCol({ data, colorMoney, amountCardsToShow, setRowPro
           (
             expanded ?
               <Fab size='small' onClick={() => {
-                setRowProp('amountCardsToShow', process.env.REACT_APP_AMOUNT_COLLAPSED_CARD);
+                setDataProp('amountCardsToShow', process.env.REACT_APP_AMOUNT_COLLAPSED_CARD);
               }}
               >
                 <ExpandLessIcon />
               </Fab>
               :
               <Fab size='small' onClick={() => {
-                setRowProp('amountCardsToShow', arrayData.length);
+                setDataProp('amountCardsToShow', arrayData.length);
               }}
               >
                 <ExpandMoreIcon />
