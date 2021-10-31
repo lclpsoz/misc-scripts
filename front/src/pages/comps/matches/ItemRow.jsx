@@ -17,7 +17,7 @@ export default function ItemRow(setMatches, matches, item) {
   else if (Math.abs(mobills.amount - nubank.amount) < 0.05) colorMoney = 'warning';
   else colorMoney = 'error';
 
-  const setRowProp = (key, value) => {
+  const setRowProp = (key, value) =>
     setMatches([
       ...matches.slice(0, item),
       {
@@ -26,7 +26,12 @@ export default function ItemRow(setMatches, matches, item) {
       },
       ...matches.slice(parseInt(item, 10) + 1),
     ]);
-  };
+
+  const setNubankProp = (key, value) =>
+    setRowProp('nubank', { ...nubank, [key]: value });
+
+  const setMobillsProp = (key, value) =>
+    setRowProp('mobills', { ...mobills, [key]: value });
 
   return (
     <>
@@ -37,18 +42,16 @@ export default function ItemRow(setMatches, matches, item) {
         wrap='nowrap' container item xs={12} spacing={0} sx={{ maxWidth: '750px' }}
         justifyContent='space-around' direction='row'>
         <ItemCol
-          data={mobills}
+          data={mobills.data}
           colorMoney={colorMoney}
-          amountCardsToShow={matches[item].amountCardsToShow}
-          expanded={matches[item].expanded}
-          setRowProp={setRowProp}
+          amountCardsToShow={mobills.amountCardsToShow}
+          setDataProp={setMobillsProp}
         />
         <ItemCol
-          data={nubank}
+          data={nubank.data}
           colorMoney={colorMoney}
-          amountCardsToShow={matches[item].amountCardsToShow}
-          expanded={matches[item].expanded}
-          setRowProp={setRowProp}
+          amountCardsToShow={nubank.amountCardsToShow}
+          setDataProp={setNubankProp}
         />
       </Grid>
     </>
