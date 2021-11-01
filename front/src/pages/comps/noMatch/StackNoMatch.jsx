@@ -16,38 +16,27 @@ export default function StackNoMatch({
   setFields,
 }) {
   const selectAll = () => {
-    let valNow = 0;
-    for (const item of unselectedShow) {
-      valNow += item.amount;
-      selected = selected.concat(item).sort(compareDate);
-      unselected = not(unselected, [item]);
-    }
+    const selectedNew = unselectedShow.reduce((acu, value) => acu.concat(value), selected);
     setFields({
-      total: valTotal + valNow,
-      selected,
-      unselected,
+      total: unselectedShow.reduce((acu, value) => acu + value.amount, valTotal),
+      selected: selectedNew.sort(compareDate),
+      unselected: not(unselected, unselectedShow),
     });
   };
 
   const unselectAll = () => {
-    let valNow = 0;
-    for (const item of selected) {
-      valNow -= item.amount;
-      unselected = unselected.concat(item).sort(compareDate);
-      selected = not(selected, [item]);
-    }
+    const selectedNew = unselected.reduce((acu, value) => acu.concat(value), selected);
     setFields({
-      total: valTotal + valNow,
-      selected,
-      unselected,
+      total: selected.reduce((acu, value) => acu - value.amount, valTotal),
+      unselected: selectedNew.sort(compareDate),
+      selected: [],
     });
   };
 
-  const colorMoney = valTotal === valTotalOther
-    ? 'success'
-    : (Math.abs(valTotal - valTotalOther) < 5
-      ? 'warning'
-      : 'error');
+  let colorMoney;
+  if (valTotal === valTotalOther) colorMoney = 'success';
+  else if (Math.abs(valTotal - valTotalOther) < 5) colorMoney = 'warning';
+  else colorMoney = 'error';
 
   return (
     <>
