@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
   Box, Grid, Typography, Divider,
 } from '@mui/material';
@@ -34,7 +35,7 @@ export default function Matches(props) {
                   </Typography>
                 </Grid>
               </Grid>
-              {Object.keys(matches).map((item, idx) => ItemRow(setMatches, matches, item))}
+              {Object.keys(matches).map((item) => ItemRow(setMatches, matches, item))}
             </Grid>
           </Box>
         )
@@ -42,3 +43,7 @@ export default function Matches(props) {
     </>
   );
 }
+Matches.propTypes = {
+  matches: PropTypes.arrayOf(Object).isRequired,
+  setMatches: PropTypes.func.isRequired,
+};
