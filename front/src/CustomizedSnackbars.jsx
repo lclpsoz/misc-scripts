@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 
 export default function CustomizedSnackbars(props) {
-  const { snackbarOpen: open, setSnackbarOpen: setOpen, snackbarMessage: message } = props;
+  const { open, setOpen, message, severity } = props;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -20,7 +20,7 @@ export default function CustomizedSnackbars(props) {
         elevation={6}
         variant="filled"
         onClose={handleClose}
-        severity="error"
+        severity={severity}
         sx={{ width: '100%' }}
       >
         {message}
@@ -29,7 +29,8 @@ export default function CustomizedSnackbars(props) {
   );
 }
 CustomizedSnackbars.propTypes = {
-  snackbarOpen: PropTypes.bool.isRequired,
-  setSnackbarOpen: PropTypes.func.isRequired,
-  snackbarMessage: PropTypes.element.isRequired,
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
+  message: PropTypes.element.isRequired,
+  severity: PropTypes.string.isRequired,
 };

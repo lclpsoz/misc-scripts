@@ -20,8 +20,10 @@ function Nubills() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(undefined);
+  const [snackbarSeverity, setSnackbarSeverity] = useState(undefined);
 
   const showSnackbarErr = (err) => {
+    setSnackbarSeverity('error');
     setSnackbarMessage((
       <ul>
         Error!
@@ -69,9 +71,10 @@ function Nubills() {
       </Backdrop>
 
       <CustomizedSnackbars
-        snackbarOpen={snackbarOpen}
-        setSnackbarOpen={setSnackbarOpen}
-        snackbarMessage={snackbarMessage}
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
       />
 
       <Box sx={{ maxWidth: '1500px', margin: '0 auto' }}>

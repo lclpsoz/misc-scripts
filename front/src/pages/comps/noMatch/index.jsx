@@ -10,6 +10,7 @@ import StackNoMatch from './StackNoMatch';
 import compareDate from './compareDate';
 
 export default function NoMatch(props) {
+  // States
   const [mobills, setMobillsState] = useState({
     selected: [],
     unselected: [],
@@ -30,6 +31,7 @@ export default function NoMatch(props) {
   const setNubankField = (key, val) => setNubankState({ ...nubank, [key]: val });
   const setNubankFields = (data) => setNubankState({ ...nubank, ...data });
 
+  // useEffects
   useEffect(() => {
     const mobList = props.mobillsNoMatch == null ? [] : Object.values(props.mobillsNoMatch);
     setMobillsFields({
