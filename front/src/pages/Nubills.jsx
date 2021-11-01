@@ -44,7 +44,7 @@ function Nubills() {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -81,27 +81,27 @@ function Nubills() {
           pointerEvents: 'none'
         }}
       >
-          <TextField
-            id='open-month'
-            label='Open month'
-            variant='filled'
-            value={openMonth}
-            onChange={(event) => {
-              setOpenMonth(event.target.value);
-            }}
-            sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
-          />
-          <IconButton
-            aria-label='save-open-month' direction='column'
-            alignContent='flex-start'
-            sx={{ background: 'white', pointerEvents: 'auto' }}
-            onClick={() => {
-              setLoading(true);
-              updateData().then(() => setLoading(false));
-            }}
-          >
-            <RefreshIcon />
-          </IconButton>
+        <TextField
+          id='open-month'
+          label='Open month'
+          variant='filled'
+          value={openMonth}
+          onChange={(event) => {
+            setOpenMonth(event.target.value);
+          }}
+          sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
+        />
+        <IconButton
+          aria-label='save-open-month' direction='column'
+          alignContent='flex-start'
+          sx={{ background: 'white', pointerEvents: 'auto' }}
+          onClick={() => {
+            setLoading(true);
+            updateData().then(() => setLoading(false));
+          }}
+        >
+          <RefreshIcon />
+        </IconButton>
       </Box>
     </Box>
   );
