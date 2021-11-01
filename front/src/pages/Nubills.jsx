@@ -21,6 +21,22 @@ function Nubills() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(undefined);
 
+  const showSnackbarErr = (err) => {
+    setSnackbarMessage((
+      <ul>
+        Error!
+        <li>
+          err.message:
+          {err.message}
+        </li>
+        <li>
+          err.response:
+          {err.reponse}
+        </li>
+      </ul>));
+    setSnackbarOpen(true);
+  };
+
   const updateData = () => axios.get(process.env.REACT_APP_NODE, { params: { openMonth, mobillsFileName: '' } }).then((res) => {
     // Set minimum amount of cards to show in Matches
     const resMatches = res.data.matches;
@@ -37,21 +53,7 @@ function Nubills() {
     setMatches(resMatches);
     setMobillsNoMatch(res.data.mobillsNoMatch);
     setNubankNoMatch(res.data.nubankNoMatch);
-  }).catch((err) => {
-    setSnackbarMessage((
-      <ul>
-        Error!
-        <li>
-          err.message:
-          {err.message}
-        </li>
-        <li>
-          err.response:
-          {err.reponse}
-        </li>
-      </ul>));
-    setSnackbarOpen(true);
-  });
+  }).catch((err) => showSnackbarErr(err));
 
   useEffect(() => {
     document.title = 'Nubills';
@@ -83,6 +85,7 @@ function Nubills() {
             setOpenMonth={setOpenMonth}
             loading={loading}
             setLoading={setLoading}
+            showSnackbarErr={showSnackbarErr}
           />
         </Stack>
       </Box>

@@ -85,10 +85,9 @@ export default function NoMatch(props) {
           props.setLoading(false);
         }
         console.log(res);
-      }).catch((err) => {
-        console.log(err);
-        console.log(err.response);
-      }).then(() => props.setLoading(false));
+      })
+      .catch((err) => props.showSnackbarErr(err))
+      .then(() => props.setLoading(false));
   };
 
   return (
@@ -148,4 +147,5 @@ NoMatch.propTypes = {
   openMonth: PropTypes.string.isRequired,
   setLoading: PropTypes.func.isRequired,
   updateData: PropTypes.func.isRequired,
+  showSnackbarErr: PropTypes.func.isRequired,
 };
