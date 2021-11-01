@@ -4,7 +4,9 @@ import {
 } from '@mui/material';
 
 export default function CustomizedSnackbars(props) {
-  const { open, setOpen, message, severity } = props;
+  const {
+    open, setOpen, message, severity,
+  } = props;
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {

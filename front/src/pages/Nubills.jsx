@@ -39,6 +39,12 @@ function Nubills() {
     setSnackbarOpen(true);
   };
 
+  const showSnackbarRes = (res) => {
+    setSnackbarSeverity('success');
+    setSnackbarMessage(res.data == null ? null : res.data.message);
+    setSnackbarOpen(true);
+  };
+
   const updateData = () => axios.get(process.env.REACT_APP_NODE, { params: { openMonth, mobillsFileName: '' } }).then((res) => {
     // Set minimum amount of cards to show in Matches
     const resMatches = res.data.matches;
@@ -89,6 +95,7 @@ function Nubills() {
             loading={loading}
             setLoading={setLoading}
             showSnackbarErr={showSnackbarErr}
+            showSnackbarRes={showSnackbarRes}
           />
         </Stack>
       </Box>

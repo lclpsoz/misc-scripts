@@ -86,7 +86,7 @@ export default function NoMatch(props) {
         } else {
           props.setLoading(false);
         }
-        console.log(res);
+        props.showSnackbarRes(res);
       })
       .catch((err) => props.showSnackbarErr(err))
       .then(() => props.setLoading(false));
@@ -150,4 +150,5 @@ NoMatch.propTypes = {
   setLoading: PropTypes.func.isRequired,
   updateData: PropTypes.func.isRequired,
   showSnackbarErr: PropTypes.func.isRequired,
+  showSnackbarRes: PropTypes.func.isRequired,
 };
