@@ -4,10 +4,12 @@ import {
   Box, Stack, TextField, IconButton, Backdrop, CircularProgress,
 } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+
 import Matches from './comps/matches';
 import NoMatch from './comps/noMatch';
+import CustomizedSnackbars from '../CustomizedSnackbars';
 
-function Nubills() {
+function Nubills(props) {
   const [matches, setMatches] = useState(undefined);
   const [mobillsNoMatch, setMobillsNoMatch] = useState(undefined);
   const [nubankNoMatch, setNubankNoMatch] = useState(undefined);
@@ -15,6 +17,9 @@ function Nubills() {
   const [openMonth, setOpenMonth] = useState('');
 
   const [loading, setLoading] = useState(false);
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(undefined);
 
   const updateData = () => axios.get(process.env.REACT_APP_NODE, { params: { openMonth, mobillsFileName: '' } }).then((res) => {
     // Set minimum amount of cards to show in Matches
@@ -33,13 +38,16 @@ function Nubills() {
     setMobillsNoMatch(res.data.mobillsNoMatch);
     setNubankNoMatch(res.data.nubankNoMatch);
   }).catch((err) => {
-    console.log(err);
-    console.log(err.response);
+    setSnackbarMessage((<ul>
+      Error!
+      <li>err.message: {err.message}</li>
+      <li>err.response: {err.reponse}</li>
+    </ul>));
+    setSnackbarOpen(true);
   });
 
   useEffect(() => {
     document.title = 'Nubills';
-    console.log('In Nubills useEffect!', process.env.REACT_APP_NODE);
   }, []);
 
   return (
@@ -50,6 +58,12 @@ function Nubills() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      <CustomizedSnackbars
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        snackbarMessage={snackbarMessage}
+      />
 
       <Box sx={{ maxWidth: '1500px', margin: '0 auto' }}>
         <Stack direction="row" spacing={3} justifyContent="space-around">
