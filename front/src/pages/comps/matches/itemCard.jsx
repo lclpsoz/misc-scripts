@@ -1,4 +1,6 @@
-import { Grid, Stack, Paper, Chip } from '@mui/material';
+import {
+  Grid, Stack, Paper, Chip,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 /**

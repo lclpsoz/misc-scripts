@@ -1,4 +1,4 @@
-import {  Grid, Divider } from '@mui/material';
+import { Grid, Divider } from '@mui/material';
 
 import ItemCol from './ItemCol';
 
@@ -8,8 +8,7 @@ import ItemCol from './ItemCol';
  * @returns
  */
 export default function ItemRow(setMatches, matches, item) {
-  var nubank = matches[item].nubank;
-  var mobills = matches[item].mobills;
+  const { [item]: { nubank, mobills } } = matches;
 
   // Set color of money based on delta between totals
   let colorMoney;
@@ -17,21 +16,19 @@ export default function ItemRow(setMatches, matches, item) {
   else if (Math.abs(mobills.amount - nubank.amount) < 0.05) colorMoney = 'warning';
   else colorMoney = 'error';
 
-  const setRowProp = (key, value) =>
-    setMatches([
-      ...matches.slice(0, item),
-      {
-        ...matches[item],
-        [key]: value,
-      },
-      ...matches.slice(parseInt(item, 10) + 1),
-    ]);
+  const setRowProp = (key, value) => setMatches([
+    ...matches.slice(0, item),
+    {
+      ...nubank,
+      ...mobills,
+      [key]: value,
+    },
+    ...matches.slice(parseInt(item, 10) + 1),
+  ]);
 
-  const setNubankProp = (key, value) =>
-    setRowProp('nubank', { ...nubank, [key]: value });
+  const setNubankProp = (key, value) => setRowProp('nubank', { ...nubank, [key]: value });
 
-  const setMobillsProp = (key, value) =>
-    setRowProp('mobills', { ...mobills, [key]: value });
+  const setMobillsProp = (key, value) => setRowProp('mobills', { ...mobills, [key]: value });
 
   return (
     <>
@@ -39,8 +36,15 @@ export default function ItemRow(setMatches, matches, item) {
         <Divider>R$ TOTAL LEFT VS R$ TOTAL RIGHT</Divider>
       </Grid>
       <Grid
-        wrap='nowrap' container item xs={12} spacing={0} sx={{ maxWidth: '750px' }}
-        justifyContent='space-around' direction='row'>
+        wrap="nowrap"
+        container
+        item
+        xs={12}
+        spacing={0}
+        sx={{ maxWidth: '750px' }}
+        justifyContent="space-around"
+        direction="row"
+      >
         <ItemCol
           data={mobills.data}
           colorMoney={colorMoney}
