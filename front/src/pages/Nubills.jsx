@@ -9,7 +9,7 @@ import Matches from './comps/matches';
 import NoMatch from './comps/noMatch';
 import CustomizedSnackbars from '../CustomizedSnackbars';
 
-function Nubills(props) {
+function Nubills() {
   const [matches, setMatches] = useState(undefined);
   const [mobillsNoMatch, setMobillsNoMatch] = useState(undefined);
   const [nubankNoMatch, setNubankNoMatch] = useState(undefined);
@@ -38,11 +38,18 @@ function Nubills(props) {
     setMobillsNoMatch(res.data.mobillsNoMatch);
     setNubankNoMatch(res.data.nubankNoMatch);
   }).catch((err) => {
-    setSnackbarMessage((<ul>
-      Error!
-      <li>err.message: {err.message}</li>
-      <li>err.response: {err.reponse}</li>
-    </ul>));
+    setSnackbarMessage((
+      <ul>
+        Error!
+        <li>
+          err.message:
+          {err.message}
+        </li>
+        <li>
+          err.response:
+          {err.reponse}
+        </li>
+      </ul>));
     setSnackbarOpen(true);
   });
 

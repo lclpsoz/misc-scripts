@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
   Snackbar, Alert,
 } from '@mui/material';
@@ -27,3 +28,8 @@ export default function CustomizedSnackbars(props) {
     </Snackbar>
   );
 }
+CustomizedSnackbars.propTypes = {
+  snackbarOpen: PropTypes.bool.isRequired,
+  setSnackbarOpen: PropTypes.func.isRequired,
+  snackbarMessage: PropTypes.element.isRequired,
+};
