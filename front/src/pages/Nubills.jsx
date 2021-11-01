@@ -4,7 +4,7 @@ import {
   Box, Stack, TextField, IconButton,
   Backdrop, CircularProgress
 } from '@mui/material';
-import { Save as SaveIcon } from '@mui/icons-material'
+import { Refresh as RefreshIcon } from '@mui/icons-material'
 import Matches from './comps/matches';
 import NoMatch from './comps/noMatch';
 
@@ -100,7 +100,7 @@ function Nubills() {
               updateData().then(() => setLoading(false));
             }}
           >
-            <SaveIcon />
+            <RefreshIcon />
           </IconButton>
       </Box>
     </Box>
