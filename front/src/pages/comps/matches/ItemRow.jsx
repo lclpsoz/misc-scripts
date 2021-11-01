@@ -8,8 +8,7 @@ import ItemCol from './ItemCol';
  * @returns
  */
 export default function ItemRow(setMatches, matches, item) {
-  const { nubank } = matches[item];
-  const { mobills } = matches[item];
+  const { [item]: { nubank, mobills } } = matches;
 
   // Set color of money based on delta between totals
   let colorMoney;
@@ -20,7 +19,8 @@ export default function ItemRow(setMatches, matches, item) {
   const setRowProp = (key, value) => setMatches([
     ...matches.slice(0, item),
     {
-      ...matches[item],
+      ...nubank,
+      ...mobills,
       [key]: value,
     },
     ...matches.slice(parseInt(item, 10) + 1),
