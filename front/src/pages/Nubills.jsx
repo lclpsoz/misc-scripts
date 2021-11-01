@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-  Box, Stack, Grid, TextField, IconButton,
+  Box, Stack, TextField, IconButton,
   Backdrop, CircularProgress
 } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material'
@@ -44,7 +44,7 @@ function Nubills() {
   }, []);
 
   return (
-    <>
+    <Box sx={{ display: 'flex', justifyContent: 'center'}}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -67,19 +67,20 @@ function Nubills() {
         </Stack>
       </Box>
 
-      <Grid container justifyContent='center' alignItems='center' spacing={1}
+      <Box
         sx={{
+          display: 'flex',
+          justifyContent: 'center',
           margin: 0,
           top: 'auto',
+          left: 'auto',
           right: 'auto',
           bottom: 20,
-          left: '0',
           position: 'fixed',
           zIndex: 1,
           pointerEvents: 'none'
         }}
       >
-        <Grid item container xs={12} direction='row' justifyContent='center' alignItems='center'>
           <TextField
             id='open-month'
             label='Open month'
@@ -101,9 +102,8 @@ function Nubills() {
           >
             <SaveIcon />
           </IconButton>
-        </Grid>
-      </Grid>
-    </>
+      </Box>
+    </Box>
   );
 }
 
