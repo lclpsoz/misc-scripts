@@ -74,7 +74,6 @@ export default function NoMatch(props) {
     });
   }, [mobills.filter, nubank.filter, mobills.unselected, nubank.unselected]);
 
-  // TODO: Move submition handling to parent component
   const handleSubmit = (event) => {
     setLoading(true);
     const current_match = {
@@ -99,7 +98,6 @@ export default function NoMatch(props) {
         console.log(err.response);
       }).then(() => setLoading(false));
   };
-  // END OF TODO
 
   return (
     <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ maxWidth: '750px' }}>
@@ -113,6 +111,18 @@ export default function NoMatch(props) {
         No Match
       </Typography>
       <Divider />
+      
+      <Box sx={{ display: 'flex', justifyContent: 'center', padding: 1 }}>
+        <Button
+          variant='contained'
+          onClick={handleSubmit}
+          endIcon={<SaveIcon />}
+          sx={{ pointerEvents: 'auto' }}
+        >
+          Save matches
+        </Button>
+      </Box>
+
       <Stack direction='row' spacing={1}>
         <StackNoMatch
           name='Mobills'
@@ -181,17 +191,6 @@ export default function NoMatch(props) {
           >
             <SaveIcon />
           </IconButton>
-        </Grid>
-
-        <Grid item>
-          <Button
-            variant='contained'
-            onClick={handleSubmit}
-            endIcon={<SaveIcon />}
-            sx={{ pointerEvents: 'auto' }}
-          >
-            Save matches
-          </Button>
         </Grid>
       </Grid>
       {/* END OF TODO */}
