@@ -1,4 +1,6 @@
-import { Grid, Stack, Paper, Chip } from '@mui/material';
+import {
+  Grid, Stack, Paper, Chip,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import compareDate from './compareDate';
@@ -6,7 +8,7 @@ import compareDate from './compareDate';
 const ItemText = styled(Paper)(({ theme }) => ({
   ...theme.typography.body1,
   padding: theme.spacing(1),
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
 function not(a, b) {
@@ -14,20 +16,21 @@ function not(a, b) {
 }
 
 export default function CardExpense(item, valSelect, valUnselect, valTotal, setFields, selected) {
-  const { title, category, date, amount, id } = item;
-  const handleChange = (event) => {
+  const {
+    title, category, date, amount,
+  } = item;
+  const handleChange = () => {
     if (!selected) {
       setFields({
-        'total': valTotal + item['amount'],
-        'selected': valSelect.concat(item).sort(compareDate),
-        'unselected': not(valUnselect, [item]),
+        total: valTotal + item.amount,
+        selected: valSelect.concat(item).sort(compareDate),
+        unselected: not(valUnselect, [item]),
       });
-    }
-    else {
+    } else {
       setFields({
-        'total': valTotal - item['amount'],
-        'unselected': valUnselect.concat(item).sort(compareDate),
-        'selected': not(valSelect, [item]),
+        total: valTotal - item.amount,
+        unselected: valUnselect.concat(item).sort(compareDate),
+        selected: not(valSelect, [item]),
       });
     }
   };
@@ -36,7 +39,7 @@ export default function CardExpense(item, valSelect, valUnselect, valTotal, setF
     <Paper>
       <Grid container spacing={1} onClick={handleChange} sx={{ cursor: 'pointer' }}>
         <Grid item xs={12}>
-          <Stack justifyContent='space-around' direction='row'>
+          <Stack justifyContent="space-around" direction="row">
             <Chip label={date} sx={{ cursor: 'pointer' }} />
             <Chip label={category} sx={{ cursor: 'pointer' }} />
             <Chip label={`R$ ${(amount / 100).toFixed(2)}`} sx={{ cursor: 'pointer' }} />

@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-  Box, Stack, TextField, IconButton,
-  Backdrop, CircularProgress
+  Box, Stack, TextField, IconButton, Backdrop, CircularProgress,
 } from '@mui/material';
-import { Refresh as RefreshIcon } from '@mui/icons-material'
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 import Matches from './comps/matches';
 import NoMatch from './comps/noMatch';
 
@@ -23,11 +22,11 @@ function Nubills() {
     resMatches.forEach((item, idx) => {
       resMatches[idx].nubank = {
         amountCardsToShow: process.env.REACT_APP_AMOUNT_COLLAPSED_CARD,
-        data: resMatches[idx].nubank
+        data: resMatches[idx].nubank,
       };
       resMatches[idx].mobills = {
         amountCardsToShow: process.env.REACT_APP_AMOUNT_COLLAPSED_CARD,
-        data: resMatches[idx].mobills
+        data: resMatches[idx].mobills,
       };
     });
     setMatches(resMatches);
@@ -49,7 +48,7 @@ function Nubills() {
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
-        <CircularProgress color='inherit' />
+        <CircularProgress color="inherit" />
       </Backdrop>
 
       <Box sx={{ maxWidth: '1500px', margin: '0 auto' }}>
@@ -78,13 +77,13 @@ function Nubills() {
           bottom: 20,
           position: 'fixed',
           zIndex: 1,
-          pointerEvents: 'none'
+          pointerEvents: 'none',
         }}
       >
         <TextField
-          id='open-month'
-          label='Open month'
-          variant='filled'
+          id="open-month"
+          label="Open month"
+          variant="filled"
           value={openMonth}
           onChange={(event) => {
             setOpenMonth(event.target.value);
@@ -92,8 +91,9 @@ function Nubills() {
           sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
         />
         <IconButton
-          aria-label='save-open-month' direction='column'
-          alignContent='flex-start'
+          aria-label="save-open-month"
+          direction="column"
+          alignContent="flex-start"
           sx={{ background: 'white', pointerEvents: 'auto' }}
           onClick={() => {
             setLoading(true);

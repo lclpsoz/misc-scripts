@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, Stack, Typography, Divider, Button } from '@mui/material'
-import { Save as SaveIcon } from '@mui/icons-material'
+import {
+  Box, Stack, Typography, Divider, Button,
+} from '@mui/material';
+import { Save as SaveIcon } from '@mui/icons-material';
 import axios from 'axios';
 
 import StackNoMatch from './StackNoMatch';
-import compareDate from './compareDate'
+import compareDate from './compareDate';
 
 export default function NoMatch(props) {
   const [mobills, setMobillsState] = useState({
@@ -29,21 +31,19 @@ export default function NoMatch(props) {
 
   useEffect(() => {
     const mobList = [];
-    for (const item in props.mobillsNoMatch)
-      mobList.push(props.mobillsNoMatch[item]);
+    for (const item in props.mobillsNoMatch) { mobList.push(props.mobillsNoMatch[item]); }
     setMobillsFields({
-      'unselected': mobList.sort(compareDate),
-      'selected': [],
-      'total': 0,
+      unselected: mobList.sort(compareDate),
+      selected: [],
+      total: 0,
     });
 
     const nuList = [];
-    for (const item in props.nubankNoMatch)
-      nuList.push(props.nubankNoMatch[item]);
+    for (const item in props.nubankNoMatch) { nuList.push(props.nubankNoMatch[item]); }
     setNubankFields({
-      'unselected': nuList.sort(compareDate),
-      'selected': [],
-      'total': 0,
+      unselected: nuList.sort(compareDate),
+      selected: [],
+      total: 0,
     });
   }, [props]);
 
@@ -51,59 +51,52 @@ export default function NoMatch(props) {
     const mobList = [];
     for (const item in mobills.unselected) {
       const curItem = mobills.unselected[item];
-      if (mobills.filter === '' || curItem.title.toLowerCase().includes(mobills.filter.toLowerCase()))
-        mobList.push(curItem);
+      if (mobills.filter === '' || curItem.title.toLowerCase().includes(mobills.filter.toLowerCase())) { mobList.push(curItem); }
     }
     setMobillsFields({
-      'unselectedShow': mobList.sort(compareDate),
+      unselectedShow: mobList.sort(compareDate),
     });
 
     const nuList = [];
     for (const item in nubank.unselected) {
       const curItem = nubank.unselected[item];
-      if (nubank.filter === '' || curItem.title.toLowerCase().includes(nubank.filter.toLowerCase()))
-        nuList.push(curItem);
+      if (nubank.filter === '' || curItem.title.toLowerCase().includes(nubank.filter.toLowerCase())) { nuList.push(curItem); }
     }
     setNubankFields({
-      'unselectedShow': nuList.sort(compareDate),
+      unselectedShow: nuList.sort(compareDate),
     });
   }, [mobills.filter, nubank.filter, mobills.unselected, nubank.unselected]);
 
   const handleSubmit = (event) => {
     props.setLoading(true);
     const current_match = {
-      'nubank': [],
-      'mobills': []
+      nubank: [],
+      mobills: [],
     };
-    for (const item of nubank.selected)
-      current_match['nubank'].push(item['id']);
-    for (const item of mobills.selected)
-      current_match['mobills'].push(item['id']);
+    for (const item of nubank.selected) { current_match.nubank.push(item.id); }
+    for (const item of mobills.selected) { current_match.mobills.push(item.id); }
 
-    axios.post(process.env.REACT_APP_NODE + '/add-matches',
+    axios.post(`${process.env.REACT_APP_NODE}/add-matches`,
       { openMonth: props.openMonth, matches: [current_match] },
       { 'Content-Type': 'application/json' }).then((res) => {
-        if (res.status === 201)
-          props.updateData().then(() => props.setLoading(false));
-        else
-          props.setLoading(false);
-        console.log(res);
-      }).catch((err) => {
-        console.log(err);
-        console.log(err.response);
-      }).then(() => props.setLoading(false));
+      if (res.status === 201) { props.updateData().then(() => props.setLoading(false)); } else { props.setLoading(false); }
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+      console.log(err.response);
+    }).then(() => props.setLoading(false));
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }} className='no-match' sx={{ maxWidth: '750px' }}>
-      <Typography variant='h1' sx={{ textAlign: 'center' }}>
+    <Box sx={{ flexGrow: 1 }} className="no-match" sx={{ maxWidth: '750px' }}>
+      <Typography variant="h1" sx={{ textAlign: 'center' }}>
         No Match
       </Typography>
       <Divider />
 
       <Box sx={{ display: 'flex', justifyContent: 'center', padding: 1 }}>
         <Button
-          variant='contained'
+          variant="contained"
           onClick={handleSubmit}
           endIcon={<SaveIcon />}
           sx={{ pointerEvents: 'auto' }}
@@ -112,9 +105,9 @@ export default function NoMatch(props) {
         </Button>
       </Box>
 
-      <Stack direction='row' spacing={1}>
+      <Stack direction="row" spacing={1}>
         <StackNoMatch
-          name='Mobills'
+          name="Mobills"
 
           selected={mobills.selected}
           unselected={mobills.unselected}
@@ -129,7 +122,7 @@ export default function NoMatch(props) {
           setFields={(data) => setMobillsFields(data)}
         />
         <StackNoMatch
-          name='NuBank'
+          name="NuBank"
 
           selected={nubank.selected}
           unselected={nubank.unselected}
