@@ -103,7 +103,6 @@ export default function Nubills() {
       <OpenMonth
         setLoading={setLoading}
         updateData={updateData}
-        openMonth={openMonth}
         setOpenMonth={setOpenMonth}
       />
     </Box>

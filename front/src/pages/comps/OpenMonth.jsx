@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box, TextField, IconButton,
 } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 
 export default function OpenMonth({
-  setLoading, updateData, openMonth, setOpenMonth,
+  setLoading, updateData, setOpenMonth,
 }) {
+  const [openMonthLocal, setOpenMonthLocal] = useState('');
+
   useEffect(() => {
     document.title = 'Nubills';
   }, []);
@@ -31,10 +33,11 @@ export default function OpenMonth({
         id="open-month"
         label="Open month"
         variant="filled"
-        value={openMonth}
+        value={openMonthLocal}
         onChange={(event) => {
-          setOpenMonth(event.target.value);
+          setOpenMonthLocal(event.target.value);
         }}
+        onBlur={() => setOpenMonth(openMonthLocal)}
         sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
       />
       <IconButton
@@ -57,5 +60,4 @@ OpenMonth.propTypes = {
   setLoading: PropTypes.func.isRequired,
   updateData: PropTypes.func.isRequired,
   setOpenMonth: PropTypes.func.isRequired,
-  openMonth: PropTypes.string.isRequired,
 };
