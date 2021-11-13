@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import {
-  Box, Stack, TextField, IconButton, Backdrop, CircularProgress,
+  Box, Stack, Backdrop, CircularProgress,
 } from '@mui/material';
-import { Refresh as RefreshIcon } from '@mui/icons-material';
 
 import Matches from './comps/matches';
 import NoMatch from './comps/noMatch';
 import CustomizedSnackbars from '../CustomizedSnackbars';
+import OpenMonth from './comps/OpenMonth';
 
-function Nubills() {
+export default function Nubills() {
   const [matches, setMatches] = useState(undefined);
   const [mobillsNoMatch, setMobillsNoMatch] = useState(undefined);
   const [nubankNoMatch, setNubankNoMatch] = useState(undefined);
@@ -100,45 +100,12 @@ function Nubills() {
         </Stack>
       </Box>
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          margin: 0,
-          top: 'auto',
-          left: 'auto',
-          right: 'auto',
-          bottom: 20,
-          position: 'fixed',
-          zIndex: 1,
-          pointerEvents: 'none',
-        }}
-      >
-        <TextField
-          id="open-month"
-          label="Open month"
-          variant="filled"
-          value={openMonth}
-          onChange={(event) => {
-            setOpenMonth(event.target.value);
-          }}
-          sx={{ width: '100px', background: 'white', pointerEvents: 'auto' }}
-        />
-        <IconButton
-          aria-label="save-open-month"
-          direction="column"
-          alignContent="flex-start"
-          sx={{ background: 'white', pointerEvents: 'auto' }}
-          onClick={() => {
-            setLoading(true);
-            updateData().then(() => setLoading(false));
-          }}
-        >
-          <RefreshIcon />
-        </IconButton>
-      </Box>
+      <OpenMonth
+        setLoading={setLoading}
+        updateData={updateData}
+        openMonth={openMonth}
+        setOpenMonth={setOpenMonth}
+      />
     </Box>
   );
 }
-
-export default Nubills;
