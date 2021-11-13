@@ -1,4 +1,6 @@
-import { Grid, Divider } from '@mui/material';
+import {
+  Grid, Divider, Chip, Stack,
+} from '@mui/material';
 
 import ItemCol from './ItemCol';
 
@@ -12,10 +14,11 @@ export default function ItemRow(setMatches, matches, item) {
 
   // Set color of money based on delta between totals
   let colorMoney;
-  const amountDiff = Object.values(nubank.data)
-    .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0)
-    - Object.values(mobills.data)
-      .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
+  const amountMobills = Object.values(nubank.data)
+    .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
+  const amountNubank = Object.values(mobills.data)
+    .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
+  const amountDiff = amountMobills - amountNubank;
   if (amountDiff === 0) colorMoney = 'success';
   else if (Math.abs(amountDiff) < 5) colorMoney = 'warning';
   else colorMoney = 'error';
@@ -40,7 +43,16 @@ export default function ItemRow(setMatches, matches, item) {
   return (
     <>
       <Grid item xs={12}>
-        <Divider>R$ TOTAL LEFT VS R$ TOTAL RIGHT</Divider>
+        <Divider>
+          <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={2}
+          >
+            <Chip label={`R$ ${(amountMobills / 100).toFixed(2)}`} color={colorMoney} />
+            <Chip label={`R$ ${(amountNubank / 100).toFixed(2)}`} color={colorMoney} />
+          </Stack>
+        </Divider>
       </Grid>
       <Grid
         wrap="nowrap"

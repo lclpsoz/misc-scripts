@@ -22,7 +22,7 @@ export default function Matches(props) {
               Matches
             </Typography>
             <Divider />
-            <Grid container spacing={2}>
+            <Grid container rowSpacing={2}>
               <Grid container wrap="nowrap" item xs={12} spacing={1}>
                 <Grid item xs>
                   <Typography variant="h2" sx={{ textAlign: 'center' }}>
