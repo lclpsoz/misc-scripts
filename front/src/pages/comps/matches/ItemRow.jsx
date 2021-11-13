@@ -14,9 +14,9 @@ export default function ItemRow(setMatches, matches, item) {
 
   // Set color of money based on delta between totals
   let colorMoney;
-  const amountMobills = Object.values(nubank.data)
+  const amountMobills = Object.values(mobills.data)
     .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
-  const amountNubank = Object.values(mobills.data)
+  const amountNubank = Object.values(nubank.data)
     .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
   const amountDiff = amountMobills - amountNubank;
   if (amountDiff === 0) colorMoney = 'success';
