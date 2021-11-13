@@ -12,19 +12,26 @@ export default function ItemRow(setMatches, matches, item) {
 
   // Set color of money based on delta between totals
   let colorMoney;
-  if (mobills.amount === nubank.amount) colorMoney = 'success';
-  else if (Math.abs(mobills.amount - nubank.amount) < 0.05) colorMoney = 'warning';
+  const amountDiff = Object.values(nubank.data)
+    .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0)
+    - Object.values(mobills.data)
+      .reduce((acc, val) => parseInt(val.amount, 10) + acc, 0);
+  if (amountDiff === 0) colorMoney = 'success';
+  else if (Math.abs(amountDiff) < 5) colorMoney = 'warning';
   else colorMoney = 'error';
 
-  const setRowProp = (key, value) => setMatches([
-    ...matches.slice(0, item),
-    {
-      ...nubank,
-      ...mobills,
+  const setRowProp = (key, value) => {
+    const newItem = {
+      nubank,
+      mobills,
       [key]: value,
-    },
-    ...matches.slice(parseInt(item, 10) + 1),
-  ]);
+    };
+    setMatches([
+      ...matches.slice(0, item),
+      newItem,
+      ...matches.slice(parseInt(item, 10) + 1),
+    ]);
+  };
 
   const setNubankProp = (key, value) => setRowProp('nubank', { ...nubank, [key]: value });
 
